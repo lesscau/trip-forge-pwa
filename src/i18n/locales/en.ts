@@ -124,6 +124,35 @@ export const en = {
       submit: "Add item"
     }
   },
+  tripPlaces: {
+    eyebrow: "Trip places",
+    title: "All places",
+    navLink: "All places",
+    backToTrip: "Back to trip",
+    loadError: "Unable to load places",
+    saveError: "Unable to save place",
+    emptyFiltered: "No places match these filters.",
+    unknownCity: "City not set",
+    dayLabel: "Day",
+    count_one: "{{count}} place",
+    count_other: "{{count}} places",
+    filters: {
+      search: "Search",
+      city: "City",
+      category: "Place type",
+      day: "Day",
+      groupBy: "Group by",
+      allCities: "All cities",
+      allCategories: "All types",
+      allDays: "All days",
+      reset: "Reset filters"
+    },
+    groupBy: {
+      city: "City",
+      category: "Place type",
+      none: "No grouping"
+    }
+  },
   today: {
     eyebrow: "Travel day",
     title: "Today",

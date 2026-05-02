@@ -5,6 +5,7 @@ import { HomePage } from "./pages/HomePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { TodayPage } from "./pages/TodayPage";
 import { TripDetailPage } from "./pages/TripDetailPage";
+import { TripPlacesPage } from "./pages/TripPlacesPage";
 import { TripsPage } from "./pages/TripsPage";
 
 const navItems = [
@@ -44,6 +45,7 @@ export function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/trips" element={<TripsPage />} />
           <Route path="/trips/:tripId" element={<TripDetailPage />} />
+          <Route path="/trips/:tripId/places" element={<TripPlacesPage />} />
           <Route path="/today" element={<TodayPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>

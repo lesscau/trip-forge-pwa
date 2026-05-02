@@ -114,4 +114,5 @@ Core screens are connected to local IndexedDB data:
 
 - `/trips` lists stored trips, creates a simple trip, and can seed a demo China trip.
 - `/trips/:tripId` loads and edits trip details, itinerary days, places, bookings, and checklist items. It supports adding and deleting days, adding and deleting places, and adding, toggling, and deleting checklist items.
+- `/trips/:tripId/places` shows all places for a trip with search, city, category, day filters, filter reset, city/category/no grouping modes, and inline place editing.
 - `/today` selects the active trip for the current date and shows the exact day, nearest future day, or latest past planned day.

@@ -124,6 +124,37 @@ export const ru = {
       submit: "Добавить пункт"
     }
   },
+  tripPlaces: {
+    eyebrow: "Места поездки",
+    title: "Все места",
+    navLink: "Все места",
+    backToTrip: "Назад к поездке",
+    loadError: "Не удалось загрузить места",
+    saveError: "Не удалось сохранить место",
+    emptyFiltered: "Нет мест под выбранные фильтры.",
+    unknownCity: "Город не указан",
+    dayLabel: "День",
+    count_one: "{{count}} место",
+    count_few: "{{count}} места",
+    count_many: "{{count}} мест",
+    count_other: "{{count}} места",
+    filters: {
+      search: "Поиск",
+      city: "Город",
+      category: "Тип места",
+      day: "День",
+      groupBy: "Группировка",
+      allCities: "Все города",
+      allCategories: "Все типы",
+      allDays: "Все дни",
+      reset: "Сбросить фильтры"
+    },
+    groupBy: {
+      city: "Город",
+      category: "Тип места",
+      none: "Без группировки"
+    }
+  },
   today: {
     eyebrow: "День поездки",
     title: "Сегодня",

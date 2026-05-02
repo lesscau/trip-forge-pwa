@@ -266,7 +266,9 @@ button {
 
 .form-panel input,
 .compact-form input,
-.compact-form select {
+.compact-form select,
+.places-filter-panel input,
+.places-filter-panel select {
   width: 100%;
   min-height: 2.75rem;
   border: 1px solid #c7d8d2;
@@ -283,6 +285,48 @@ button {
   border-radius: 0.5rem;
   background: #ffffff;
   padding: 1rem;
+}
+
+.places-filter-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+  gap: 0.85rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.places-filter-panel label {
+  display: grid;
+  gap: 0.35rem;
+  color: #52635f;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.places-group-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.places-group {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.places-group h3 {
+  margin: 0;
+  color: #172026;
+  font-size: 1.05rem;
+}
+
+.place-card-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
 .danger-action {
