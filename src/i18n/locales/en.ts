@@ -111,6 +111,7 @@ export const en = {
       dayId: "Itinerary day",
       noDay: "No day",
       name: "Name",
+      category: "Place type",
       nameZh: "Chinese name",
       address: "Address",
       addressZh: "Chinese address",
@@ -184,6 +185,18 @@ export const en = {
   },
   dates: {
     notSet: "Dates not set"
+  },
+  placeCategories: {
+    attraction: "Attraction",
+    food: "Food",
+    station: "Station",
+    airport: "Airport",
+    hotel: "Hotel",
+    shopping: "Shopping",
+    walk: "Walk",
+    museum: "Museum",
+    park: "Park",
+    other: "Other"
   },
   bookingTypes: {
     hotel: "Hotel",

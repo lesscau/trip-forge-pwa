@@ -2,6 +2,10 @@ import type { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Place } from "../../db/database";
+import {
+  getPlaceCategoryLabelKey,
+  placeCategories
+} from "../places/placeCategories";
 import type { PlaceFormValues } from "./types";
 
 type PlaceCardProps = {
@@ -34,6 +38,7 @@ export function PlaceCard({
   const { t } = useTranslation();
   const formValues = editPlaceForm ?? {
     name: place.name,
+    category: place.category ?? "other",
     nameZh: place.nameZh ?? "",
     address: place.address ?? "",
     addressZh: place.addressZh ?? "",
@@ -57,6 +62,23 @@ export function PlaceCard({
               type="text"
               value={formValues.name}
             />
+          </label>
+          <label>
+            <span>{t("tripDetail.placeForm.category")}</span>
+            <select
+              onChange={(event) =>
+                onEditFormChange(place.id, {
+                  category: event.target.value as PlaceFormValues["category"]
+                })
+              }
+              value={formValues.category}
+            >
+              {placeCategories.map((category) => (
+                <option key={category} value={category}>
+                  {t(getPlaceCategoryLabelKey(category))}
+                </option>
+              ))}
+            </select>
           </label>
           <label>
             <span>{t("tripDetail.placeForm.nameZh")}</span>
@@ -134,6 +156,7 @@ export function PlaceCard({
               </button>
             </div>
           </div>
+          <span>{t(getPlaceCategoryLabelKey(place.category ?? "other"))}</span>
           {place.nameZh ? <span>{place.nameZh}</span> : null}
           {place.addressZh ? <p>{place.addressZh}</p> : null}
           {place.address ? <p>{place.address}</p> : null}

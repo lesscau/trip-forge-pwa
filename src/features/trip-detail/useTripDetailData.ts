@@ -23,6 +23,7 @@ import {
 } from "../../db/repositories";
 import { insertDayAfter, moveDayByOffset, movePlaceByOffset } from "../../app/itineraryOrdering";
 import { groupPlacesByDay } from "../../app/tripDetailData";
+import { normalizePlaceCategory } from "../places/placeCategories";
 import { isDateWithinRange } from "../../shared/dateValidation";
 import { getNextOrderIndex } from "../../shared/ordering";
 import {
@@ -313,6 +314,7 @@ export function useTripDetailData(tripId?: string) {
       tripId: data.trip.id,
       dayId,
       name,
+      category: normalizePlaceCategory(placeForm.category),
       nameZh: placeForm.nameZh.trim() || undefined,
       address: placeForm.address.trim() || undefined,
       addressZh: placeForm.addressZh.trim() || undefined,
@@ -347,6 +349,7 @@ export function useTripDetailData(tripId?: string) {
       ...current,
       [place.id]: {
         name: place.name,
+        category: place.category ?? "other",
         nameZh: place.nameZh ?? "",
         address: place.address ?? "",
         addressZh: place.addressZh ?? "",
@@ -381,6 +384,7 @@ export function useTripDetailData(tripId?: string) {
 
     const placeForm = editPlaceForms[place.id] ?? {
       name: place.name,
+      category: place.category ?? "other",
       nameZh: place.nameZh ?? "",
       address: place.address ?? "",
       addressZh: place.addressZh ?? "",
@@ -395,6 +399,7 @@ export function useTripDetailData(tripId?: string) {
     await upsertPlace({
       ...place,
       name,
+      category: normalizePlaceCategory(placeForm.category),
       nameZh: placeForm.nameZh.trim() || undefined,
       address: placeForm.address.trim() || undefined,
       addressZh: placeForm.addressZh.trim() || undefined,

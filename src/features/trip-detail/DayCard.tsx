@@ -2,6 +2,10 @@ import type { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Place } from "../../db/database";
+import {
+  getPlaceCategoryLabelKey,
+  placeCategories
+} from "../places/placeCategories";
 import { formatDate } from "../../shared/format";
 import type { DayWithPlaces } from "../../app/tripDetailData";
 import { PlaceCard } from "./PlaceCard";
@@ -151,6 +155,23 @@ export function DayCard({
                 type="text"
                 value={placeForm.name}
               />
+            </label>
+            <label>
+              <span>{t("tripDetail.placeForm.category")}</span>
+              <select
+                onChange={(event) =>
+                  onPlaceFormChange(day.id, {
+                    category: event.target.value as PlaceFormValues["category"]
+                  })
+                }
+                value={placeForm.category}
+              >
+                {placeCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {t(getPlaceCategoryLabelKey(category))}
+                  </option>
+                ))}
+              </select>
             </label>
             <label>
               <span>{t("tripDetail.placeForm.nameZh")}</span>

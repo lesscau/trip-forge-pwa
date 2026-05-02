@@ -80,37 +80,53 @@ export async function createDemoChinaTrip(): Promise<DemoChinaTrip> {
       id: "demo-place-forbidden-city",
       tripId: trip.id,
       dayId: days[0].id,
+      city: "Beijing",
+      category: "museum",
       name: "Forbidden City",
       nameZh: "故宫博物院",
       address: "4 Jingshan Front St, Dongcheng, Beijing",
       addressZh: "北京市东城区景山前街4号",
+      lat: 39.9163,
+      lng: 116.3972,
       orderIndex: 0
     },
     {
       id: "demo-place-temple-heaven",
       tripId: trip.id,
       dayId: days[0].id,
+      city: "Beijing",
+      category: "park",
       name: "Temple of Heaven",
       nameZh: "天坛公园",
       addressZh: "北京市东城区天坛东路甲1号",
+      lat: 39.8822,
+      lng: 116.4066,
       orderIndex: 1
     },
     {
       id: "demo-place-xian-wall",
       tripId: trip.id,
       dayId: days[1].id,
+      city: "Xi'an",
+      category: "attraction",
       name: "Xi'an City Wall",
       nameZh: "西安城墙",
       addressZh: "陕西省西安市碑林区南大街",
+      lat: 34.2583,
+      lng: 108.9466,
       orderIndex: 2
     },
     {
       id: "demo-place-bund",
       tripId: trip.id,
       dayId: days[2].id,
+      city: "Shanghai",
+      category: "walk",
       name: "The Bund",
       nameZh: "外滩",
       addressZh: "上海市黄浦区中山东一路",
+      lat: 31.2403,
+      lng: 121.4906,
       orderIndex: 3
     }
   ];

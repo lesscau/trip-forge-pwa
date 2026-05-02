@@ -111,6 +111,7 @@ export const ru = {
       dayId: "День маршрута",
       noDay: "Без привязки к дню",
       name: "Название",
+      category: "Тип места",
       nameZh: "Название на китайском",
       address: "Адрес",
       addressZh: "Адрес на китайском",
@@ -184,6 +185,18 @@ export const ru = {
   },
   dates: {
     notSet: "Даты не указаны"
+  },
+  placeCategories: {
+    attraction: "Достопримечательность",
+    food: "Еда",
+    station: "Вокзал",
+    airport: "Аэропорт",
+    hotel: "Отель",
+    shopping: "Покупки",
+    walk: "Прогулка",
+    museum: "Музей",
+    park: "Парк",
+    other: "Другое"
   },
   bookingTypes: {
     hotel: "Отель",

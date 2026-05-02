@@ -1,6 +1,17 @@
 import Dexie, { type EntityTable } from "dexie";
 
 export type BookingType = "hotel" | "train" | "flight" | "attraction" | "other";
+export type PlaceCategory =
+  | "attraction"
+  | "food"
+  | "station"
+  | "airport"
+  | "hotel"
+  | "shopping"
+  | "walk"
+  | "museum"
+  | "park"
+  | "other";
 export type TravelDocumentType =
   | "passport"
   | "visa"
@@ -32,6 +43,8 @@ export type Place = {
   id: string;
   tripId: string;
   dayId?: string;
+  city?: string;
+  category?: PlaceCategory;
   name: string;
   nameZh?: string;
   address?: string;

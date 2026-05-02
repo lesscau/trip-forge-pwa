@@ -1,4 +1,11 @@
-import type { Booking, ChecklistItem, Place, Trip, TripDay } from "../../db/database";
+import type {
+  Booking,
+  ChecklistItem,
+  Place,
+  PlaceCategory,
+  Trip,
+  TripDay
+} from "../../db/database";
 import type { DayWithPlaces } from "../../app/tripDetailData";
 
 export type DayFormValues = {
@@ -11,6 +18,7 @@ export type InsertDayFormValues = Omit<DayFormValues, "date">;
 
 export type PlaceFormValues = {
   name: string;
+  category: PlaceCategory;
   nameZh: string;
   address: string;
   addressZh: string;
@@ -50,6 +58,7 @@ export const EMPTY_INSERT_DAY_FORM: InsertDayFormValues = {
 
 export const EMPTY_PLACE_FORM: PlaceFormValues = {
   name: "",
+  category: "other",
   nameZh: "",
   address: "",
   addressZh: "",

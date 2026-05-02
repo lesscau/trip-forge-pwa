@@ -8,6 +8,19 @@ export const bookingTypeSchema = z.enum([
   "other"
 ]);
 
+export const placeCategorySchema = z.enum([
+  "attraction",
+  "food",
+  "station",
+  "airport",
+  "hotel",
+  "shopping",
+  "walk",
+  "museum",
+  "park",
+  "other"
+]);
+
 export const travelDocumentTypeSchema = z.enum([
   "passport",
   "visa",
@@ -40,6 +53,8 @@ export const placeSchema = z.object({
   id: z.string(),
   tripId: z.string(),
   dayId: z.string().optional(),
+  city: z.string().optional(),
+  category: placeCategorySchema.optional(),
   name: z.string(),
   nameZh: z.string().optional(),
   address: z.string().optional(),
