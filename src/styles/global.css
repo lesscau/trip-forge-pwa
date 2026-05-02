@@ -226,6 +226,75 @@ button {
   cursor: pointer;
 }
 
+.form-panel,
+.data-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-panel {
+  max-width: 44rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.form-panel h2,
+.data-section h2 {
+  margin: 0;
+  color: #172026;
+  font-size: 1.35rem;
+}
+
+.form-panel label {
+  display: grid;
+  gap: 0.35rem;
+  color: #52635f;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.form-panel input {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid #c7d8d2;
+  border-radius: 0.5rem;
+  color: #172026;
+  font: inherit;
+  padding: 0.65rem 0.75rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.inline-list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.checklist-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.checklist-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 2.75rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 0.7rem 0.85rem;
+}
+
 .language-panel,
 .storage-panel {
   display: grid;

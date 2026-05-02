@@ -5,7 +5,8 @@ export const en = {
     supported: "Supported",
     unsupported: "Unsupported",
     enabled: "Enabled",
-    notEnabled: "Not enabled"
+    notEnabled: "Not enabled",
+    loading: "Loading..."
   },
   nav: {
     home: "Home",
@@ -34,12 +35,21 @@ export const en = {
     sampleName: "China 2026",
     sampleDates: "Beijing, Xi'an, Shanghai",
     createDemo: "Create demo trip",
+    createTrip: "Create trip",
+    createTripEyebrow: "New trip",
     loading: "Loading trips...",
     empty: "No trips yet. Create a demo trip to inspect the structure.",
     loadError: "Unable to load trips",
     createDemoError: "Unable to create demo trip",
+    createTripError: "Unable to create trip",
     cardDescription:
-      "Open day-by-day planning, places, bookings, and notes."
+      "Open day-by-day planning, places, bookings, and notes.",
+    form: {
+      title: "Title",
+      destinationCountry: "Country",
+      startDate: "Start date",
+      endDate: "End date"
+    }
   },
   tripDetail: {
     eyebrow: "Trip detail",
@@ -49,9 +59,28 @@ export const en = {
     arrivalDescription:
       "Use this route for itinerary, places, documents, and expenses.",
     places: "Places",
+    place: "Place",
     placesTitle: "Chinese addresses and map links",
     placesDescription:
-      "Place records will support copy buttons and Amap/Baidu/Apple Maps."
+      "Place records will support copy buttons and Amap/Baidu/Apple Maps.",
+    missingTripId: "Trip id is missing",
+    loadError: "Unable to load trip",
+    notFoundTitle: "Trip not found",
+    notFoundDescription: "It may have been deleted or not created yet.",
+    emptyDays: "No itinerary days yet.",
+    emptyDayPlaces: "No places for this day yet.",
+    emptyPlaces: "No places in this trip yet.",
+    emptyBookings: "No bookings in this trip yet.",
+    emptyChecklist: "No checklist items yet.",
+    confirmationCode: "Confirmation code",
+    startsAt: "Starts",
+    endsAt: "Ends",
+    sections: {
+      itinerary: "Itinerary",
+      places: "Places",
+      bookings: "Bookings",
+      checklist: "Checklist"
+    }
   },
   today: {
     eyebrow: "Travel day",
@@ -63,7 +92,18 @@ export const en = {
     backup: "Backup",
     exportJson: "Export JSON",
     backupDescription:
-      "Offline backup and restore flows belong in the app settings."
+      "Offline backup and restore flows belong in the app settings.",
+    loadError: "Unable to load today screen",
+    emptyEyebrow: "No active trip",
+    emptyTitle: "No trip today",
+    emptyDescription:
+      "Create a trip or open the trip list to inspect your itinerary.",
+    openTrips: "Open trips",
+    currentDay: "Current day",
+    nearestFutureDay: "Nearest future day",
+    emptyPlaces: "No places for the selected day yet.",
+    emptyBookings: "No bookings for the selected day yet.",
+    emptyChecklist: "No checklist items for this trip yet."
   },
   settings: {
     eyebrow: "Local data",
@@ -98,5 +138,12 @@ export const en = {
   },
   dates: {
     notSet: "Dates not set"
+  },
+  bookingTypes: {
+    hotel: "Hotel",
+    train: "Train",
+    flight: "Flight",
+    attraction: "Attraction",
+    other: "Other"
   }
 } as const;

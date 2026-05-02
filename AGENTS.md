@@ -23,6 +23,7 @@ The build output should be deployable as static files to GitHub Pages, Cloudflar
 - IndexedDB via Dexie
 - Zod for runtime validation of imported data
 - React Router
+- i18next and react-i18next
 - CSS Modules or plain CSS
 - Vitest for unit tests
 
@@ -49,6 +50,9 @@ Do not add:
 - Use Dexie as the IndexedDB access layer.
 - Provide JSON import/export for backups.
 - Validate imported JSON data at runtime with Zod.
+- Keep Russian as the default interface language with English fallback.
+- Add all new user-facing strings to `src/i18n/locales/ru.ts` and `src/i18n/locales/en.ts`.
+- Do not add i18n backend loaders, browser language detectors, lazy translation loading, or external translation services.
 - The app must work offline after the first successful opening.
 - Keep the code simple, readable, and easy to extend.
 - Prefer small, explicit modules over broad abstractions.

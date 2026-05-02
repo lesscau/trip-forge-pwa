@@ -131,6 +131,13 @@ describe("trip repositories", () => {
     expect(demo.places.every((place) => place.tripId === demo.trip.id)).toBe(true);
   });
 
+  it("does not duplicate demo China trip data", async () => {
+    await createDemoChinaTrip();
+    await createDemoChinaTrip();
+
+    await expect(listTrips()).resolves.toHaveLength(1);
+  });
+
   it("validates domain entities with Zod", async () => {
     const trip = await createTrip({
       title: "Validation Test",

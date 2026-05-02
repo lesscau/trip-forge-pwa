@@ -5,7 +5,8 @@ export const ru = {
     supported: "Поддерживается",
     unsupported: "Не поддерживается",
     enabled: "Включено",
-    notEnabled: "Не включено"
+    notEnabled: "Не включено",
+    loading: "Загрузка..."
   },
   nav: {
     home: "Главная",
@@ -34,12 +35,21 @@ export const ru = {
     sampleName: "Китай 2026",
     sampleDates: "Пекин, Сиань, Шанхай",
     createDemo: "Создать демо-поездку",
+    createTrip: "Создать поездку",
+    createTripEyebrow: "Новая поездка",
     loading: "Загружаем поездки...",
     empty: "Пока нет поездок. Создайте демо-поездку, чтобы посмотреть структуру.",
     loadError: "Не удалось загрузить поездки",
     createDemoError: "Не удалось создать демо-поездку",
+    createTripError: "Не удалось создать поездку",
     cardDescription:
-      "Откройте план по дням, места, бронирования и заметки."
+      "Откройте план по дням, места, бронирования и заметки.",
+    form: {
+      title: "Название",
+      destinationCountry: "Страна",
+      startDate: "Дата начала",
+      endDate: "Дата окончания"
+    }
   },
   tripDetail: {
     eyebrow: "Детали поездки",
@@ -49,9 +59,28 @@ export const ru = {
     arrivalDescription:
       "Этот маршрут будет использоваться для плана по дням, мест, документов и расходов.",
     places: "Места",
+    place: "Место",
     placesTitle: "Китайские адреса и ссылки на карты",
     placesDescription:
-      "Записи мест будут поддерживать копирование адресов и ссылки на Amap/Baidu/Apple Maps."
+      "Записи мест будут поддерживать копирование адресов и ссылки на Amap/Baidu/Apple Maps.",
+    missingTripId: "Не указан идентификатор поездки",
+    loadError: "Не удалось загрузить поездку",
+    notFoundTitle: "Поездка не найдена",
+    notFoundDescription: "Возможно, она была удалена или ещё не создана.",
+    emptyDays: "В маршруте пока нет дней.",
+    emptyDayPlaces: "На этот день пока нет мест.",
+    emptyPlaces: "В поездке пока нет мест.",
+    emptyBookings: "В поездке пока нет бронирований.",
+    emptyChecklist: "В чеклисте пока нет пунктов.",
+    confirmationCode: "Код подтверждения",
+    startsAt: "Начало",
+    endsAt: "Окончание",
+    sections: {
+      itinerary: "Маршрут",
+      places: "Места",
+      bookings: "Бронирования",
+      checklist: "Чеклист"
+    }
   },
   today: {
     eyebrow: "День поездки",
@@ -63,7 +92,18 @@ export const ru = {
     backup: "Резервная копия",
     exportJson: "Экспорт JSON",
     backupDescription:
-      "Offline экспорт и восстановление резервной копии находятся в настройках."
+      "Offline экспорт и восстановление резервной копии находятся в настройках.",
+    loadError: "Не удалось загрузить экран сегодня",
+    emptyEyebrow: "Нет активной поездки",
+    emptyTitle: "Сегодня нет поездки",
+    emptyDescription:
+      "Создайте поездку или откройте список поездок, чтобы посмотреть маршрут.",
+    openTrips: "Открыть поездки",
+    currentDay: "Текущий день",
+    nearestFutureDay: "Ближайший будущий день",
+    emptyPlaces: "На выбранный день пока нет мест.",
+    emptyBookings: "На выбранный день пока нет бронирований.",
+    emptyChecklist: "В поездке пока нет чеклиста."
   },
   settings: {
     eyebrow: "Локальные данные",
@@ -98,5 +138,12 @@ export const ru = {
   },
   dates: {
     notSet: "Даты не указаны"
+  },
+  bookingTypes: {
+    hotel: "Отель",
+    train: "Поезд",
+    flight: "Самолёт",
+    attraction: "Достопримечательность",
+    other: "Другое"
   }
 } as const;
