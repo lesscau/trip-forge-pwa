@@ -10,7 +10,9 @@ export const ru = {
     delete: "Удалить",
     edit: "Редактировать",
     save: "Сохранить",
-    cancel: "Отмена"
+    cancel: "Отмена",
+    up: "Вверх",
+    down: "Вниз"
   },
   nav: {
     home: "Главная",
@@ -81,6 +83,9 @@ export const ru = {
       "Удалить день маршрута? Связанные места, бронирования и заметки тоже будут удалены.",
     confirmDeletePlace: "Удалить место?",
     confirmDeleteChecklistItem: "Удалить пункт чеклиста?",
+    collapseDay: "Свернуть",
+    collapseAllDays: "Свернуть все",
+    expandAllDays: "Развернуть все",
     confirmationCode: "Код подтверждения",
     startsAt: "Начало",
     endsAt: "Окончание",
@@ -96,6 +101,11 @@ export const ru = {
       summary: "Краткое описание",
       dateOutOfRange: "Дата дня должна быть внутри диапазона поездки.",
       submit: "Добавить день"
+    },
+    insertDayForm: {
+      city: "Город нового дня",
+      summary: "Краткое описание",
+      submit: "Добавить день после этого"
     },
     placeForm: {
       dayId: "День маршрута",

@@ -1,8 +1,19 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type FormEvent
+} from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import type { Booking, ChecklistItem, Place, Trip } from "../../db/database";
+import type {
+  Booking,
+  ChecklistItem,
+  Place,
+  Trip,
+  TripDay
+} from "../../db/database";
 import {
   deleteChecklistItem,
   deleteDay,
@@ -14,11 +25,17 @@ import {
   listPlacesByTrip,
   upsertChecklistItem,
   upsertDay,
-  upsertPlace
+  upsertPlace,
+  updateTrip
 } from "../../db/repositories";
 import { isDateWithinRange } from "../../shared/dateValidation";
 import { formatDate, formatTripDateRange } from "../../shared/format";
 import { getNextOrderIndex } from "../../shared/ordering";
+import {
+  insertDayAfter,
+  moveDayByOffset,
+  movePlaceByOffset
+} from "../itineraryOrdering";
 import { groupPlacesByDay, type DayWithPlaces } from "../tripDetailData";
 
 type DayFormValues = {
@@ -46,6 +63,11 @@ const EMPTY_DAY_FORM: DayFormValues = {
   summary: ""
 };
 
+const EMPTY_INSERT_DAY_FORM: Omit<DayFormValues, "date"> = {
+  city: "",
+  summary: ""
+};
+
 const EMPTY_PLACE_FORM: PlaceFormValues = {
   name: "",
   nameZh: "",
@@ -59,6 +81,11 @@ const EMPTY_CHECKLIST_FORM: ChecklistFormValues = {
   category: ""
 };
 
+function getLastDayDate(days: TripDay[]): string | undefined {
+  return [...days].sort((left, right) => right.orderIndex - left.orderIndex)[0]
+    ?.date;
+}
+
 export function TripDetailPage() {
   const { tripId } = useParams();
   const { t } = useTranslation();
@@ -70,6 +97,9 @@ export function TripDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>();
   const [dayForm, setDayForm] = useState<DayFormValues>(EMPTY_DAY_FORM);
+  const [insertDayForms, setInsertDayForms] = useState<
+    Record<string, Omit<DayFormValues, "date">>
+  >({});
   const [dayFormError, setDayFormError] = useState<string>();
   const [placeForms, setPlaceForms] = useState<Record<string, PlaceFormValues>>(
     {}
@@ -80,6 +110,9 @@ export function TripDetailPage() {
   >({});
   const [checklistForm, setChecklistForm] =
     useState<ChecklistFormValues>(EMPTY_CHECKLIST_FORM);
+  const [collapsedDayIds, setCollapsedDayIds] = useState<
+    Record<string, boolean>
+  >({});
 
   const loadTrip = useCallback(async () => {
     if (!tripId) {
@@ -167,7 +200,114 @@ export function TripDetailPage() {
     }
 
     await deleteDay(dayId);
+    setCollapsedDayIds((current) => {
+      const nextCollapsedDayIds = { ...current };
+
+      delete nextCollapsedDayIds[dayId];
+
+      return nextCollapsedDayIds;
+    });
     await loadTrip();
+  };
+
+  const toggleDayCollapsed = (dayId: string) => {
+    setCollapsedDayIds((current) => ({
+      ...current,
+      [dayId]: !current[dayId]
+    }));
+  };
+
+  const collapseDays = (dayIds: string[]) => {
+    setCollapsedDayIds(Object.fromEntries(dayIds.map((dayId) => [dayId, true])));
+  };
+
+  const expandAllDays = () => {
+    setCollapsedDayIds({});
+  };
+
+  const updateInsertDayForm = (
+    afterDayId: string,
+    patch: Partial<Omit<DayFormValues, "date">>
+  ) => {
+    setInsertDayForms((current) => ({
+      ...current,
+      [afterDayId]: {
+        ...EMPTY_INSERT_DAY_FORM,
+        ...current[afterDayId],
+        ...patch
+      }
+    }));
+  };
+
+  const persistReorderedDays = async (nextDays: TripDay[]) => {
+    if (!trip) {
+      return;
+    }
+
+    const lastDayDate = getLastDayDate(nextDays);
+
+    await Promise.all(nextDays.map((day) => upsertDay(day)));
+
+    if (lastDayDate && lastDayDate > trip.endDate) {
+      await updateTrip(trip.id, { endDate: lastDayDate });
+    }
+
+    await loadTrip();
+  };
+
+  const handleInsertDayAfter = async (
+    event: FormEvent<HTMLFormElement>,
+    afterDayId: string
+  ) => {
+    event.preventDefault();
+
+    if (!trip) {
+      return;
+    }
+
+    const insertForm = insertDayForms[afterDayId] ?? EMPTY_INSERT_DAY_FORM;
+    const city = insertForm.city.trim();
+    const summary = insertForm.summary.trim();
+
+    if (!city) {
+      return;
+    }
+
+    const currentDays = daysWithPlaces.map(({ day }) => day);
+    const nextDays = insertDayAfter(
+      currentDays,
+      {
+        id: crypto.randomUUID(),
+        tripId: trip.id,
+        date: trip.startDate,
+        city,
+        summary: summary || undefined,
+        orderIndex: 0
+      },
+      afterDayId,
+      trip.startDate
+    );
+
+    setInsertDayForms((current) => ({
+      ...current,
+      [afterDayId]: { city: "", summary: "" }
+    }));
+    await persistReorderedDays(nextDays);
+  };
+
+  const handleMoveDay = async (dayId: string, offset: -1 | 1) => {
+    if (!trip) {
+      return;
+    }
+
+    const nextDays = moveDayByOffset(
+      daysWithPlaces.map(({ day }) => day),
+      dayId,
+      offset,
+      trip.startDate
+    );
+
+    await persistReorderedDays(nextDays);
   };
 
   const updatePlaceForm = (
@@ -225,6 +365,12 @@ export function TripDetailPage() {
     }
 
     await deletePlace(placeId);
+    await loadTrip();
+  };
+
+  const handleMovePlace = async (placeId: string, offset: -1 | 1) => {
+    const nextPlaces = movePlaceByOffset(places, placeId, offset);
+    await Promise.all(nextPlaces.map((place) => upsertPlace(place)));
     await loadTrip();
   };
 
@@ -365,19 +511,28 @@ export function TripDetailPage() {
       <ItinerarySection
         dayForm={dayForm}
         dayFormError={dayFormError}
+        collapsedDayIds={collapsedDayIds}
         daysWithPlaces={daysWithPlaces}
         editPlaceForms={editPlaceForms}
         editingPlaceId={editingPlaceId}
+        insertDayForms={insertDayForms}
         onAddDay={handleAddDay}
         onAddPlace={handleAddPlace}
         onCancelEditingPlace={cancelEditingPlace}
+        onCollapseDays={collapseDays}
         onDayFormChange={updateDayForm}
         onDeleteDay={handleDeleteDay}
         onDeletePlace={handleDeletePlace}
         onEditPlace={handleEditPlace}
         onEditPlaceFormChange={updateEditPlaceForm}
+        onExpandAllDays={expandAllDays}
+        onInsertDayAfter={handleInsertDayAfter}
+        onInsertDayFormChange={updateInsertDayForm}
+        onMoveDay={handleMoveDay}
+        onMovePlace={handleMovePlace}
         onPlaceFormChange={updatePlaceForm}
         onStartEditingPlace={startEditingPlace}
+        onToggleDayCollapsed={toggleDayCollapsed}
         placeForms={placeForms}
       />
       <BookingsSection bookings={bookings} />
@@ -414,18 +569,32 @@ type ItinerarySectionProps = {
   daysWithPlaces: DayWithPlaces[];
   dayForm: DayFormValues;
   dayFormError?: string;
+  collapsedDayIds: Record<string, boolean>;
+  insertDayForms: Record<string, Omit<DayFormValues, "date">>;
   placeForms: Record<string, PlaceFormValues>;
   editingPlaceId?: string;
   editPlaceForms: Record<string, PlaceFormValues>;
   onAddDay: (event: FormEvent<HTMLFormElement>) => Promise<void>;
+  onCollapseDays: (dayIds: string[]) => void;
+  onExpandAllDays: () => void;
   onDayFormChange: (patch: Partial<DayFormValues>) => void;
   onDeleteDay: (dayId: string) => Promise<void>;
+  onInsertDayAfter: (
+    event: FormEvent<HTMLFormElement>,
+    afterDayId: string
+  ) => Promise<void>;
+  onInsertDayFormChange: (
+    afterDayId: string,
+    patch: Partial<Omit<DayFormValues, "date">>
+  ) => void;
+  onMoveDay: (dayId: string, offset: -1 | 1) => Promise<void>;
   onAddPlace: (
     event: FormEvent<HTMLFormElement>,
     dayId: string
   ) => Promise<void>;
   onPlaceFormChange: (dayId: string, patch: Partial<PlaceFormValues>) => void;
   onDeletePlace: (placeId: string) => Promise<void>;
+  onMovePlace: (placeId: string, offset: -1 | 1) => Promise<void>;
   onStartEditingPlace: (place: Place) => void;
   onEditPlaceFormChange: (
     placeId: string,
@@ -436,31 +605,66 @@ type ItinerarySectionProps = {
     place: Place
   ) => Promise<void>;
   onCancelEditingPlace: () => void;
+  onToggleDayCollapsed: (dayId: string) => void;
 };
 
 function ItinerarySection({
   daysWithPlaces,
   dayForm,
   dayFormError,
+  collapsedDayIds,
+  insertDayForms,
   placeForms,
   editingPlaceId,
   editPlaceForms,
   onAddDay,
   onDayFormChange,
   onDeleteDay,
+  onInsertDayAfter,
+  onInsertDayFormChange,
+  onMoveDay,
   onAddPlace,
   onPlaceFormChange,
   onDeletePlace,
+  onMovePlace,
   onStartEditingPlace,
   onEditPlaceFormChange,
   onEditPlace,
-  onCancelEditingPlace
+  onCancelEditingPlace,
+  onCollapseDays,
+  onExpandAllDays,
+  onToggleDayCollapsed
 }: ItinerarySectionProps) {
   const { t } = useTranslation();
+  const allDaysCollapsed =
+    daysWithPlaces.length > 0 &&
+    daysWithPlaces.every(({ day }) => collapsedDayIds[day.id]);
+
+  const toggleAllDaysCollapsed = () => {
+    if (allDaysCollapsed) {
+      onExpandAllDays();
+      return;
+    }
+
+    onCollapseDays(daysWithPlaces.map(({ day }) => day.id));
+  };
 
   return (
     <section className="data-section">
-      <h2>{t("tripDetail.sections.itinerary")}</h2>
+      <div className="section-title-row">
+        <h2>{t("tripDetail.sections.itinerary")}</h2>
+        {daysWithPlaces.length > 0 ? (
+          <button
+            className="secondary-action"
+            onClick={toggleAllDaysCollapsed}
+            type="button"
+          >
+            {allDaysCollapsed
+              ? t("tripDetail.expandAllDays")
+              : t("tripDetail.collapseAllDays")}
+          </button>
+        ) : null}
+      </div>
       <form className="compact-form" onSubmit={(event) => void onAddDay(event)}>
         <label>
           <span>{t("tripDetail.dayForm.date")}</span>
@@ -502,17 +706,28 @@ function ItinerarySection({
           {daysWithPlaces.map((dayWithPlaces) => (
             <DayCard
               dayWithPlaces={dayWithPlaces}
+              isCollapsed={Boolean(collapsedDayIds[dayWithPlaces.day.id])}
               editPlaceForms={editPlaceForms}
               editingPlaceId={editingPlaceId}
+              insertDayForm={
+                insertDayForms[dayWithPlaces.day.id] ?? EMPTY_INSERT_DAY_FORM
+              }
               key={dayWithPlaces.day.id}
+              canMoveDown={daysWithPlaces.indexOf(dayWithPlaces) < daysWithPlaces.length - 1}
+              canMoveUp={daysWithPlaces.indexOf(dayWithPlaces) > 0}
               onAddPlace={onAddPlace}
               onCancelEditingPlace={onCancelEditingPlace}
               onDeleteDay={onDeleteDay}
               onDeletePlace={onDeletePlace}
               onEditPlace={onEditPlace}
               onEditPlaceFormChange={onEditPlaceFormChange}
+              onInsertDayAfter={onInsertDayAfter}
+              onInsertDayFormChange={onInsertDayFormChange}
+              onMoveDay={onMoveDay}
+              onMovePlace={onMovePlace}
               onPlaceFormChange={onPlaceFormChange}
               onStartEditingPlace={onStartEditingPlace}
+              onToggleCollapsed={onToggleDayCollapsed}
               placeForm={placeForms[dayWithPlaces.day.id] ?? EMPTY_PLACE_FORM}
             />
           ))}
@@ -524,16 +739,30 @@ function ItinerarySection({
 
 type DayCardProps = {
   dayWithPlaces: DayWithPlaces;
+  isCollapsed: boolean;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
   placeForm: PlaceFormValues;
+  insertDayForm: Omit<DayFormValues, "date">;
   editingPlaceId?: string;
   editPlaceForms: Record<string, PlaceFormValues>;
   onDeleteDay: (dayId: string) => Promise<void>;
+  onInsertDayAfter: (
+    event: FormEvent<HTMLFormElement>,
+    afterDayId: string
+  ) => Promise<void>;
+  onInsertDayFormChange: (
+    afterDayId: string,
+    patch: Partial<Omit<DayFormValues, "date">>
+  ) => void;
+  onMoveDay: (dayId: string, offset: -1 | 1) => Promise<void>;
   onAddPlace: (
     event: FormEvent<HTMLFormElement>,
     dayId: string
   ) => Promise<void>;
   onPlaceFormChange: (dayId: string, patch: Partial<PlaceFormValues>) => void;
   onDeletePlace: (placeId: string) => Promise<void>;
+  onMovePlace: (placeId: string, offset: -1 | 1) => Promise<void>;
   onStartEditingPlace: (place: Place) => void;
   onEditPlaceFormChange: (
     placeId: string,
@@ -544,34 +773,80 @@ type DayCardProps = {
     place: Place
   ) => Promise<void>;
   onCancelEditingPlace: () => void;
+  onToggleCollapsed: (dayId: string) => void;
 };
 
 function DayCard({
   dayWithPlaces,
+  isCollapsed,
+  canMoveUp,
+  canMoveDown,
   placeForm,
+  insertDayForm,
   editingPlaceId,
   editPlaceForms,
   onDeleteDay,
+  onInsertDayAfter,
+  onInsertDayFormChange,
+  onMoveDay,
   onAddPlace,
   onPlaceFormChange,
   onDeletePlace,
+  onMovePlace,
   onStartEditingPlace,
   onEditPlaceFormChange,
   onEditPlace,
-  onCancelEditingPlace
+  onCancelEditingPlace,
+  onToggleCollapsed
 }: DayCardProps) {
   const { i18n, t } = useTranslation();
   const { day, places: dayPlaces } = dayWithPlaces;
 
   return (
     <article>
-      <span>{formatDate(day.date, i18n.language)}</span>
-      <strong>{day.city}</strong>
-      {day.summary ? <p>{day.summary}</p> : null}
+      <div className="item-heading-row">
+        <div className="day-heading-copy">
+          <span>{formatDate(day.date, i18n.language)}</span>
+          <strong>{day.city}</strong>
+        </div>
+        <div className="day-heading-actions">
+          <label className="collapse-toggle">
+            <input
+              checked={isCollapsed}
+              onChange={() => onToggleCollapsed(day.id)}
+              type="checkbox"
+            />
+            <span>{t("tripDetail.collapseDay")}</span>
+          </label>
+          <div className="reorder-actions">
+            <button
+              className="secondary-action"
+              disabled={!canMoveUp}
+              onClick={() => void onMoveDay(day.id, -1)}
+              type="button"
+            >
+              {t("common.up")}
+            </button>
+            <button
+              className="secondary-action"
+              disabled={!canMoveDown}
+              onClick={() => void onMoveDay(day.id, 1)}
+              type="button"
+            >
+              {t("common.down")}
+            </button>
+          </div>
+        </div>
+      </div>
+      {!isCollapsed && day.summary ? <p>{day.summary}</p> : null}
+      {!isCollapsed ? (
+        <>
       {dayPlaces.length > 0 ? (
         <div className="day-place-list">
           {dayPlaces.map((place) => (
             <PlaceCard
+              canMoveDown={dayPlaces.indexOf(place) < dayPlaces.length - 1}
+              canMoveUp={dayPlaces.indexOf(place) > 0}
               editPlaceForm={editPlaceForms[place.id]}
               isEditing={editingPlaceId === place.id}
               key={place.id}
@@ -579,6 +854,7 @@ function DayCard({
               onDelete={onDeletePlace}
               onEdit={onEditPlace}
               onEditFormChange={onEditPlaceFormChange}
+              onMovePlace={onMovePlace}
               onStartEditing={onStartEditingPlace}
               place={place}
             />
@@ -646,6 +922,35 @@ function DayCard({
           {t("tripDetail.placeForm.submit")}
         </button>
       </form>
+      <form
+        className="compact-form embedded-form"
+        onSubmit={(event) => void onInsertDayAfter(event, day.id)}
+      >
+        <label>
+          <span>{t("tripDetail.insertDayForm.city")}</span>
+          <input
+            onChange={(event) =>
+              onInsertDayFormChange(day.id, { city: event.target.value })
+            }
+            required
+            type="text"
+            value={insertDayForm.city}
+          />
+        </label>
+        <label>
+          <span>{t("tripDetail.insertDayForm.summary")}</span>
+          <input
+            onChange={(event) =>
+              onInsertDayFormChange(day.id, { summary: event.target.value })
+            }
+            type="text"
+            value={insertDayForm.summary}
+          />
+        </label>
+        <button className="secondary-action" type="submit">
+          {t("tripDetail.insertDayForm.submit")}
+        </button>
+      </form>
       <button
         className="danger-action"
         onClick={() => void onDeleteDay(day.id)}
@@ -653,6 +958,8 @@ function DayCard({
       >
         {t("common.delete")}
       </button>
+        </>
+      ) : null}
     </article>
   );
 }
@@ -660,9 +967,12 @@ function DayCard({
 type PlaceCardProps = {
   place: Place;
   isEditing: boolean;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
   editPlaceForm?: PlaceFormValues;
   onStartEditing: (place: Place) => void;
   onDelete: (placeId: string) => Promise<void>;
+  onMovePlace: (placeId: string, offset: -1 | 1) => Promise<void>;
   onEditFormChange: (placeId: string, patch: Partial<PlaceFormValues>) => void;
   onEdit: (event: FormEvent<HTMLFormElement>, place: Place) => Promise<void>;
   onCancelEditing: () => void;
@@ -671,9 +981,12 @@ type PlaceCardProps = {
 function PlaceCard({
   place,
   isEditing,
+  canMoveUp,
+  canMoveDown,
   editPlaceForm,
   onStartEditing,
   onDelete,
+  onMovePlace,
   onEditFormChange,
   onEdit,
   onCancelEditing
@@ -760,7 +1073,27 @@ function PlaceCard({
         </form>
       ) : (
         <>
-          <strong>{place.name}</strong>
+          <div className="item-heading-row">
+            <strong>{place.name}</strong>
+            <div className="reorder-actions">
+              <button
+                className="secondary-action"
+                disabled={!canMoveUp}
+                onClick={() => void onMovePlace(place.id, -1)}
+                type="button"
+              >
+                {t("common.up")}
+              </button>
+              <button
+                className="secondary-action"
+                disabled={!canMoveDown}
+                onClick={() => void onMovePlace(place.id, 1)}
+                type="button"
+              >
+                {t("common.down")}
+              </button>
+            </div>
+          </div>
           {place.nameZh ? <span>{place.nameZh}</span> : null}
           {place.addressZh ? <p>{place.addressZh}</p> : null}
           {place.address ? <p>{place.address}</p> : null}

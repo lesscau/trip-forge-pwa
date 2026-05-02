@@ -10,7 +10,9 @@ export const en = {
     delete: "Delete",
     edit: "Edit",
     save: "Save",
-    cancel: "Cancel"
+    cancel: "Cancel",
+    up: "Up",
+    down: "Down"
   },
   nav: {
     home: "Home",
@@ -81,6 +83,9 @@ export const en = {
       "Delete this itinerary day? Linked places, bookings, and notes will also be deleted.",
     confirmDeletePlace: "Delete this place?",
     confirmDeleteChecklistItem: "Delete this checklist item?",
+    collapseDay: "Collapse",
+    collapseAllDays: "Collapse all",
+    expandAllDays: "Expand all",
     confirmationCode: "Confirmation code",
     startsAt: "Starts",
     endsAt: "Ends",
@@ -96,6 +101,11 @@ export const en = {
       summary: "Summary",
       dateOutOfRange: "The day date must be inside the trip date range.",
       submit: "Add day"
+    },
+    insertDayForm: {
+      city: "New day city",
+      summary: "Summary",
+      submit: "Add day after this"
     },
     placeForm: {
       dayId: "Itinerary day",
