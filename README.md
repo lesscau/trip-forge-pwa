@@ -4,6 +4,8 @@ TripForge is a frontend-only local-first PWA for planning a trip to China.
 
 There is no backend, server-side rendering, authentication service, external database, Java, Python API, or Node server runtime. The app is a static Vite build that can be hosted on GitHub Pages, Cloudflare Pages, Nginx, Caddy, or any static file host.
 
+Trip data is intended to be local-first in the browser with IndexedDB via Dexie. Browser storage persistence can reduce cleanup risk, but it is not a replacement for JSON backup import/export.
+
 ## Stack
 
 - Vite
@@ -34,6 +36,8 @@ Preview the production build:
 ```bash
 npm run preview
 ```
+
+Use `npm run build` followed by `npm run preview` when checking PWA behavior locally. The development server is useful for UI work, but service worker and manifest behavior should be verified from the production build preview.
 
 ## Check
 
@@ -67,6 +71,10 @@ In GitHub, enable Pages with:
 3. Set Source to GitHub Actions.
 
 For project pages, the workflow builds with `VITE_BASE_PATH` set to the repository name path, such as `/trip-forge-pwa/`. Local builds keep the default `/` base path.
+
+Vite exposes that path as `import.meta.env.BASE_URL`. TripForge uses it for React Router's `basename`, so links like `/today`, `/trips`, and `/settings` stay under `/trip-forge-pwa/` on GitHub Pages instead of navigating to the root of `lesscau.github.io`.
+
+The PWA manifest uses relative `start_url`, `scope`, and icon paths so the app works from the GitHub Pages subpath.
 
 ## Project Structure
 

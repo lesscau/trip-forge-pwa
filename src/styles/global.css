@@ -199,7 +199,8 @@ button {
 .card-grid,
 .today-layout,
 .timeline-list,
-.settings-list {
+.settings-list,
+.storage-details {
   display: grid;
   gap: 1rem;
 }
@@ -223,6 +224,72 @@ button {
 
 .settings-list button {
   cursor: pointer;
+}
+
+.storage-panel {
+  display: grid;
+  gap: 1rem;
+  max-width: 44rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.storage-panel h2 {
+  margin: 0.25rem 0 0;
+  color: #172026;
+  font-size: 1.35rem;
+}
+
+.storage-panel p {
+  margin: 0;
+  color: #52635f;
+  line-height: 1.6;
+}
+
+.storage-details {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin: 0;
+}
+
+.storage-details div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.storage-details dt {
+  color: #52635f;
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.storage-details dd {
+  margin: 0;
+  color: #172026;
+  font-weight: 750;
+}
+
+.storage-action {
+  justify-self: start;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: #0f766e;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 750;
+  padding: 0.75rem 1rem;
+}
+
+.storage-action:disabled {
+  background: #93aaa4;
+  cursor: not-allowed;
+}
+
+.status-message {
+  border-left: 3px solid #0f766e;
+  padding-left: 0.75rem;
 }
 
 @media (max-width: 720px) {
