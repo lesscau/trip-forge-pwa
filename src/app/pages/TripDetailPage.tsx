@@ -20,6 +20,22 @@ import { formatDate, formatTripDateRange } from "../../shared/format";
 import { getNextOrderIndex } from "../../shared/ordering";
 import { groupPlacesByDay, type DayWithPlaces } from "../tripDetailData";
 
+type PlaceFormValues = {
+  name: string;
+  nameZh: string;
+  address: string;
+  addressZh: string;
+  notes: string;
+};
+
+const EMPTY_PLACE_FORM: PlaceFormValues = {
+  name: "",
+  nameZh: "",
+  address: "",
+  addressZh: "",
+  notes: ""
+};
+
 export function TripDetailPage() {
   const { tripId } = useParams();
   const { i18n, t } = useTranslation();
@@ -35,14 +51,13 @@ export function TripDetailPage() {
     city: "",
     summary: ""
   });
-  const [placeForm, setPlaceForm] = useState({
-    dayId: "",
-    name: "",
-    nameZh: "",
-    address: "",
-    addressZh: "",
-    notes: ""
-  });
+  const [placeForms, setPlaceForms] = useState<Record<string, PlaceFormValues>>(
+    {}
+  );
+  const [editingPlaceId, setEditingPlaceId] = useState<string>();
+  const [editPlaceForms, setEditPlaceForms] = useState<
+    Record<string, PlaceFormValues>
+  >({});
   const [checklistForm, setChecklistForm] = useState({
     title: "",
     category: ""
@@ -130,17 +145,36 @@ export function TripDetailPage() {
     await loadTrip();
   };
 
-  const handleAddPlace = async (event: FormEvent<HTMLFormElement>) => {
+  const updatePlaceForm = (
+    dayId: string,
+    patch: Partial<PlaceFormValues>
+  ) => {
+    setPlaceForms((current) => ({
+      ...current,
+      [dayId]: {
+        ...EMPTY_PLACE_FORM,
+        ...current[dayId],
+        ...patch
+      }
+    }));
+  };
+
+  const handleAddPlace = async (
+    event: FormEvent<HTMLFormElement>,
+    dayId: string
+  ) => {
     event.preventDefault();
 
     if (!trip) {
       return;
     }
 
+    const placeForm = placeForms[dayId] ?? EMPTY_PLACE_FORM;
+
     await upsertPlace({
       id: crypto.randomUUID(),
       tripId: trip.id,
-      dayId: placeForm.dayId || undefined,
+      dayId,
       name: placeForm.name,
       nameZh: placeForm.nameZh || undefined,
       address: placeForm.address || undefined,
@@ -148,19 +182,73 @@ export function TripDetailPage() {
       notes: placeForm.notes || undefined,
       orderIndex: getNextOrderIndex(places)
     });
-    setPlaceForm({
-      dayId: "",
-      name: "",
-      nameZh: "",
-      address: "",
-      addressZh: "",
-      notes: ""
-    });
+    setPlaceForms((current) => ({
+      ...current,
+      [dayId]: EMPTY_PLACE_FORM
+    }));
     await loadTrip();
   };
 
   const handleDeletePlace = async (placeId: string) => {
     await deletePlace(placeId);
+    await loadTrip();
+  };
+
+  const startEditingPlace = (place: Place) => {
+    setEditingPlaceId(place.id);
+    setEditPlaceForms((current) => ({
+      ...current,
+      [place.id]: {
+        name: place.name,
+        nameZh: place.nameZh ?? "",
+        address: place.address ?? "",
+        addressZh: place.addressZh ?? "",
+        notes: place.notes ?? ""
+      }
+    }));
+  };
+
+  const updateEditPlaceForm = (
+    placeId: string,
+    patch: Partial<PlaceFormValues>
+  ) => {
+    setEditPlaceForms((current) => ({
+      ...current,
+      [placeId]: {
+        ...EMPTY_PLACE_FORM,
+        ...current[placeId],
+        ...patch
+      }
+    }));
+  };
+
+  const cancelEditingPlace = () => {
+    setEditingPlaceId(undefined);
+  };
+
+  const handleEditPlace = async (
+    event: FormEvent<HTMLFormElement>,
+    place: Place
+  ) => {
+    event.preventDefault();
+
+    const placeForm = editPlaceForms[place.id] ?? {
+      name: place.name,
+      nameZh: place.nameZh ?? "",
+      address: place.address ?? "",
+      addressZh: place.addressZh ?? "",
+      notes: place.notes ?? ""
+    };
+
+    await upsertPlace({
+      ...place,
+      name: placeForm.name,
+      nameZh: placeForm.nameZh || undefined,
+      address: placeForm.address || undefined,
+      addressZh: placeForm.addressZh || undefined,
+      notes: placeForm.notes || undefined
+    });
+    setEditingPlaceId(undefined);
     await loadTrip();
   };
 
@@ -280,139 +368,203 @@ export function TripDetailPage() {
                 <strong>{day.city}</strong>
                 {day.summary ? <p>{day.summary}</p> : null}
                 {dayPlaces.length > 0 ? (
-                  <ul className="inline-list">
+                  <div className="day-place-list">
                     {dayPlaces.map((place) => (
-                      <li key={place.id}>
-                        {place.nameZh
-                          ? `${place.name} - ${place.nameZh}`
-                          : place.name}
-                      </li>
+                      <article className="day-place-card" key={place.id}>
+                        {editingPlaceId === place.id ? (
+                          <form
+                            className="compact-form embedded-form"
+                            onSubmit={(event) =>
+                              void handleEditPlace(event, place)
+                            }
+                          >
+                            <label>
+                              <span>{t("tripDetail.placeForm.name")}</span>
+                              <input
+                                onChange={(event) =>
+                                  updateEditPlaceForm(place.id, {
+                                    name: event.target.value
+                                  })
+                                }
+                                required
+                                type="text"
+                                value={
+                                  editPlaceForms[place.id]?.name ?? place.name
+                                }
+                              />
+                            </label>
+                            <label>
+                              <span>{t("tripDetail.placeForm.nameZh")}</span>
+                              <input
+                                onChange={(event) =>
+                                  updateEditPlaceForm(place.id, {
+                                    nameZh: event.target.value
+                                  })
+                                }
+                                type="text"
+                                value={
+                                  editPlaceForms[place.id]?.nameZh ??
+                                  place.nameZh ??
+                                  ""
+                                }
+                              />
+                            </label>
+                            <label>
+                              <span>{t("tripDetail.placeForm.address")}</span>
+                              <input
+                                onChange={(event) =>
+                                  updateEditPlaceForm(place.id, {
+                                    address: event.target.value
+                                  })
+                                }
+                                type="text"
+                                value={
+                                  editPlaceForms[place.id]?.address ??
+                                  place.address ??
+                                  ""
+                                }
+                              />
+                            </label>
+                            <label>
+                              <span>{t("tripDetail.placeForm.addressZh")}</span>
+                              <input
+                                onChange={(event) =>
+                                  updateEditPlaceForm(place.id, {
+                                    addressZh: event.target.value
+                                  })
+                                }
+                                type="text"
+                                value={
+                                  editPlaceForms[place.id]?.addressZh ??
+                                  place.addressZh ??
+                                  ""
+                                }
+                              />
+                            </label>
+                            <label>
+                              <span>{t("tripDetail.placeForm.notes")}</span>
+                              <input
+                                onChange={(event) =>
+                                  updateEditPlaceForm(place.id, {
+                                    notes: event.target.value
+                                  })
+                                }
+                                type="text"
+                                value={
+                                  editPlaceForms[place.id]?.notes ??
+                                  place.notes ??
+                                  ""
+                                }
+                              />
+                            </label>
+                            <div className="button-row">
+                              <button className="secondary-action" type="submit">
+                                {t("common.save")}
+                              </button>
+                              <button
+                                className="secondary-action"
+                                onClick={cancelEditingPlace}
+                                type="button"
+                              >
+                                {t("common.cancel")}
+                              </button>
+                            </div>
+                          </form>
+                        ) : (
+                          <>
+                            <strong>{place.name}</strong>
+                            {place.nameZh ? <span>{place.nameZh}</span> : null}
+                            {place.addressZh ? <p>{place.addressZh}</p> : null}
+                            {place.address ? <p>{place.address}</p> : null}
+                            {place.notes ? <p>{place.notes}</p> : null}
+                            <div className="button-row">
+                              <button
+                                className="secondary-action"
+                                onClick={() => startEditingPlace(place)}
+                                type="button"
+                              >
+                                {t("common.edit")}
+                              </button>
+                              <button
+                                className="danger-action"
+                                onClick={() => void handleDeletePlace(place.id)}
+                                type="button"
+                              >
+                                {t("common.delete")}
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </article>
                     ))}
-                  </ul>
+                  </div>
                 ) : (
                   <p className="muted-text">{t("tripDetail.emptyDayPlaces")}</p>
                 )}
+                <form
+                  className="compact-form day-place-form"
+                  onSubmit={(event) => void handleAddPlace(event, day.id)}
+                >
+                  <label>
+                    <span>{t("tripDetail.placeForm.name")}</span>
+                    <input
+                      onChange={(event) =>
+                        updatePlaceForm(day.id, { name: event.target.value })
+                      }
+                      required
+                      type="text"
+                      value={placeForms[day.id]?.name ?? ""}
+                    />
+                  </label>
+                  <label>
+                    <span>{t("tripDetail.placeForm.nameZh")}</span>
+                    <input
+                      onChange={(event) =>
+                        updatePlaceForm(day.id, { nameZh: event.target.value })
+                      }
+                      type="text"
+                      value={placeForms[day.id]?.nameZh ?? ""}
+                    />
+                  </label>
+                  <label>
+                    <span>{t("tripDetail.placeForm.address")}</span>
+                    <input
+                      onChange={(event) =>
+                        updatePlaceForm(day.id, { address: event.target.value })
+                      }
+                      type="text"
+                      value={placeForms[day.id]?.address ?? ""}
+                    />
+                  </label>
+                  <label>
+                    <span>{t("tripDetail.placeForm.addressZh")}</span>
+                    <input
+                      onChange={(event) =>
+                        updatePlaceForm(day.id, {
+                          addressZh: event.target.value
+                        })
+                      }
+                      type="text"
+                      value={placeForms[day.id]?.addressZh ?? ""}
+                    />
+                  </label>
+                  <label>
+                    <span>{t("tripDetail.placeForm.notes")}</span>
+                    <input
+                      onChange={(event) =>
+                        updatePlaceForm(day.id, { notes: event.target.value })
+                      }
+                      type="text"
+                      value={placeForms[day.id]?.notes ?? ""}
+                    />
+                  </label>
+                  <button className="secondary-action" type="submit">
+                    {t("tripDetail.placeForm.submit")}
+                  </button>
+                </form>
                 <button
                   className="danger-action"
                   onClick={() => void handleDeleteDay(day.id)}
-                  type="button"
-                >
-                  {t("common.delete")}
-                </button>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="data-section">
-        <h2>{t("tripDetail.sections.places")}</h2>
-        <form
-          className="compact-form"
-          onSubmit={(event) => void handleAddPlace(event)}
-        >
-          <label>
-            <span>{t("tripDetail.placeForm.dayId")}</span>
-            <select
-              onChange={(event) =>
-                setPlaceForm((current) => ({
-                  ...current,
-                  dayId: event.target.value
-                }))
-              }
-              value={placeForm.dayId}
-            >
-              <option value="">{t("tripDetail.placeForm.noDay")}</option>
-              {daysWithPlaces.map(({ day }) => (
-                <option key={day.id} value={day.id}>
-                  {day.city} - {day.date}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>{t("tripDetail.placeForm.name")}</span>
-            <input
-              onChange={(event) =>
-                setPlaceForm((current) => ({
-                  ...current,
-                  name: event.target.value
-                }))
-              }
-              required
-              type="text"
-              value={placeForm.name}
-            />
-          </label>
-          <label>
-            <span>{t("tripDetail.placeForm.nameZh")}</span>
-            <input
-              onChange={(event) =>
-                setPlaceForm((current) => ({
-                  ...current,
-                  nameZh: event.target.value
-                }))
-              }
-              type="text"
-              value={placeForm.nameZh}
-            />
-          </label>
-          <label>
-            <span>{t("tripDetail.placeForm.address")}</span>
-            <input
-              onChange={(event) =>
-                setPlaceForm((current) => ({
-                  ...current,
-                  address: event.target.value
-                }))
-              }
-              type="text"
-              value={placeForm.address}
-            />
-          </label>
-          <label>
-            <span>{t("tripDetail.placeForm.addressZh")}</span>
-            <input
-              onChange={(event) =>
-                setPlaceForm((current) => ({
-                  ...current,
-                  addressZh: event.target.value
-                }))
-              }
-              type="text"
-              value={placeForm.addressZh}
-            />
-          </label>
-          <label>
-            <span>{t("tripDetail.placeForm.notes")}</span>
-            <input
-              onChange={(event) =>
-                setPlaceForm((current) => ({
-                  ...current,
-                  notes: event.target.value
-                }))
-              }
-              type="text"
-              value={placeForm.notes}
-            />
-          </label>
-          <button className="secondary-action" type="submit">
-            {t("tripDetail.placeForm.submit")}
-          </button>
-        </form>
-        {places.length === 0 ? (
-          <p className="muted-text">{t("tripDetail.emptyPlaces")}</p>
-        ) : (
-          <div className="card-grid">
-            {places.map((place) => (
-              <article className="focus-card" key={place.id}>
-                <span>{place.nameZh ?? t("tripDetail.place")}</span>
-                <strong>{place.name}</strong>
-                {place.addressZh ? <p>{place.addressZh}</p> : null}
-                {place.notes ? <p>{place.notes}</p> : null}
-                <button
-                  className="danger-action"
-                  onClick={() => void handleDeletePlace(place.id)}
                   type="button"
                 >
                   {t("common.delete")}

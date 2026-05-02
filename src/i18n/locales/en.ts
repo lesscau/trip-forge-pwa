@@ -7,7 +7,10 @@ export const en = {
     enabled: "Enabled",
     notEnabled: "Not enabled",
     loading: "Loading...",
-    delete: "Delete"
+    delete: "Delete",
+    edit: "Edit",
+    save: "Save",
+    cancel: "Cancel"
   },
   nav: {
     home: "Home",

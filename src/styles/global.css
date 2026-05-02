@@ -304,6 +304,36 @@ button {
   padding-left: 1.1rem;
 }
 
+.day-place-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.day-place-card {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #f7faf9;
+  padding: 0.8rem;
+}
+
+.day-place-card p {
+  margin: 0;
+  color: #52635f;
+  line-height: 1.5;
+}
+
+.day-place-form {
+  box-shadow: none;
+}
+
+.embedded-form {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
 .checklist-list {
   display: grid;
   gap: 0.6rem;

@@ -7,7 +7,10 @@ export const ru = {
     enabled: "Включено",
     notEnabled: "Не включено",
     loading: "Загрузка...",
-    delete: "Удалить"
+    delete: "Удалить",
+    edit: "Редактировать",
+    save: "Сохранить",
+    cancel: "Отмена"
   },
   nav: {
     home: "Главная",
