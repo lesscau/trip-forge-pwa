@@ -153,6 +153,15 @@ export const en = {
       none: "No grouping"
     }
   },
+  copy: {
+    copied: "Copied",
+    error: "Could not copy"
+  },
+  placeActions: {
+    copyChineseName: "Copy Chinese name",
+    copyChineseAddress: "Copy Chinese address",
+    openInAmap: "Open in Amap"
+  },
   today: {
     eyebrow: "Travel day",
     title: "Today",

@@ -329,6 +329,34 @@ button {
   gap: 0.75rem;
 }
 
+.place-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.copy-action {
+  display: inline-grid;
+  gap: 0.25rem;
+}
+
+.copy-status,
+.copy-error {
+  color: #52635f;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.copy-error {
+  color: #9f1d1d;
+}
+
+.secondary-action:disabled {
+  background: #eef4f2;
+  color: #8aa09a;
+  cursor: not-allowed;
+}
+
 .danger-action {
   justify-self: start;
   min-height: 2.35rem;

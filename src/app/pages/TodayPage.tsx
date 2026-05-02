@@ -22,6 +22,7 @@ import {
   toLocalDateKey,
   type TodaySelection
 } from "../todaySelection";
+import { PlaceActions } from "../../features/places/PlaceActions";
 
 export function TodayPage() {
   const { i18n, t } = useTranslation();
@@ -126,6 +127,7 @@ export function TodayPage() {
                     <span>{place.nameZh ?? t("tripDetail.place")}</span>
                     <strong>{place.name}</strong>
                     {place.addressZh ? <p>{place.addressZh}</p> : null}
+                    <PlaceActions place={place} />
                   </article>
                 ))}
               </div>

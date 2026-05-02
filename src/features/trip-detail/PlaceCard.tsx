@@ -6,6 +6,7 @@ import {
   getPlaceCategoryLabelKey,
   placeCategories
 } from "../places/placeCategories";
+import { PlaceActions } from "../places/PlaceActions";
 import type { PlaceFormValues } from "./types";
 
 type PlaceCardProps = {
@@ -161,6 +162,7 @@ export function PlaceCard({
           {place.addressZh ? <p>{place.addressZh}</p> : null}
           {place.address ? <p>{place.address}</p> : null}
           {place.notes ? <p>{place.notes}</p> : null}
+          <PlaceActions place={place} />
           <div className="button-row">
             <button
               className="secondary-action"

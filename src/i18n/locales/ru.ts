@@ -155,6 +155,15 @@ export const ru = {
       none: "Без группировки"
     }
   },
+  copy: {
+    copied: "Скопировано",
+    error: "Не удалось скопировать"
+  },
+  placeActions: {
+    copyChineseName: "Копировать название на китайском",
+    copyChineseAddress: "Копировать адрес на китайском",
+    openInAmap: "Открыть в Amap"
+  },
   today: {
     eyebrow: "День поездки",
     title: "Сегодня",

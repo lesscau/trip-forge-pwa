@@ -15,6 +15,7 @@ import {
   normalizePlaceCategory,
   placeCategories
 } from "../../features/places/placeCategories";
+import { PlaceActions } from "../../features/places/PlaceActions";
 import {
   filterPlaces,
   getPlaceDayLabel,
@@ -558,6 +559,7 @@ function PlaceListCard({
               {t("tripPlaces.dayLabel")}: {dayLabel}
             </p>
           ) : null}
+          <PlaceActions place={place} />
           <div className="button-row">
             <button
               className="secondary-action"
