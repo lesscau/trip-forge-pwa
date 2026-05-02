@@ -72,7 +72,16 @@ In GitHub, enable Pages with:
 
 For project pages, the workflow builds with `VITE_BASE_PATH` set to the repository name path, such as `/trip-forge-pwa/`. Local builds keep the default `/` base path.
 
-Vite exposes that path as `import.meta.env.BASE_URL`. TripForge uses it for React Router's `basename`, so links like `/today`, `/trips`, and `/settings` stay under `/trip-forge-pwa/` on GitHub Pages instead of navigating to the root of `lesscau.github.io`.
+TripForge uses React Router hash routing on GitHub Pages. This avoids any need for server-side routing or a `404.html` fallback on the static host.
+
+Production URLs:
+
+```text
+https://lesscau.github.io/trip-forge-pwa/#/
+https://lesscau.github.io/trip-forge-pwa/#/trips
+https://lesscau.github.io/trip-forge-pwa/#/today
+https://lesscau.github.io/trip-forge-pwa/#/settings
+```
 
 The PWA manifest uses relative `start_url`, `scope`, and icon paths so the app works from the GitHub Pages subpath.
 
