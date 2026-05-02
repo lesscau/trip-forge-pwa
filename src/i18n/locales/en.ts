@@ -77,7 +77,9 @@ export const en = {
     emptyDays: "No itinerary days yet.",
     emptyDayPlaces: "No places for this day yet.",
     emptyPlaces: "No places in this trip yet.",
+    emptyExpenses: "No expenses in this trip yet.",
     emptyBookings: "No bookings in this trip yet.",
+    emptyDocuments: "No travel documents in this trip yet.",
     emptyChecklist: "No checklist items yet.",
     confirmDeleteDay:
       "Delete this itinerary day? Linked places, bookings, and notes will also be deleted.",
@@ -92,7 +94,9 @@ export const en = {
     sections: {
       itinerary: "Itinerary",
       places: "Places",
+      expenses: "Expenses",
       bookings: "Bookings",
+      documents: "Documents",
       checklist: "Checklist"
     },
     dayForm: {
@@ -123,7 +127,43 @@ export const en = {
     checklistForm: {
       title: "Checklist item",
       category: "Category",
+      noCategory: "No category",
       submit: "Add item"
+    },
+    expenseForm: {
+      title: "Title",
+      amount: "Amount",
+      currency: "Currency",
+      category: "Category",
+      paidBy: "Paid by",
+      dayId: "Itinerary day",
+      noDay: "No day",
+      submit: "Add expense"
+    },
+    expenseTotals: {
+      byCurrency: "Total by currency",
+      byCategory: "Total by category"
+    },
+    bookingForm: {
+      type: "Type",
+      title: "Title",
+      confirmationCode: "Confirmation code",
+      startsAt: "Starts",
+      endsAt: "Ends",
+      address: "Address",
+      addressZh: "Chinese address",
+      notes: "Notes",
+      submit: "Add booking"
+    },
+    bookingActions: {
+      copyConfirmationCode: "Copy confirmation code",
+      copyChineseAddress: "Copy Chinese address"
+    },
+    documentForm: {
+      type: "Type",
+      title: "Title",
+      notes: "Notes",
+      submit: "Add document"
     }
   },
   tripPlaces: {
@@ -247,6 +287,14 @@ export const en = {
     train: "Train",
     flight: "Flight",
     attraction: "Attraction",
+    other: "Other"
+  },
+  travelDocumentTypes: {
+    passport: "Passport",
+    visa: "Visa",
+    insurance: "Insurance",
+    ticket: "Ticket",
+    booking: "Booking",
     other: "Other"
   }
 } as const;

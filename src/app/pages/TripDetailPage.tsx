@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { BookingsSection } from "../../features/trip-detail/BookingsSection";
 import { ChecklistSection } from "../../features/trip-detail/ChecklistSection";
+import { DocumentsSection } from "../../features/trip-detail/DocumentsSection";
+import { ExpensesSection } from "../../features/trip-detail/ExpensesSection";
 import { ItinerarySection } from "../../features/trip-detail/ItinerarySection";
 import { TripHeader } from "../../features/trip-detail/TripHeader";
 import { useTripDetailData } from "../../features/trip-detail/useTripDetailData";
@@ -62,7 +64,46 @@ export function TripDetailPage() {
         onToggleDayCollapsed={tripDetail.toggleDayCollapsed}
         placeForms={tripDetail.placeForms}
       />
-      <BookingsSection bookings={tripDetail.bookings} />
+      <ExpensesSection
+        days={tripDetail.daysWithPlaces.map(({ day }) => day)}
+        editExpenseForms={tripDetail.editExpenseForms}
+        editingExpenseId={tripDetail.editingExpenseId}
+        expenseForm={tripDetail.expenseForm}
+        expenses={tripDetail.expenses}
+        onAddExpense={tripDetail.handleAddExpense}
+        onCancelEditingExpense={tripDetail.cancelEditingExpense}
+        onDeleteExpense={tripDetail.handleDeleteExpense}
+        onEditExpense={tripDetail.handleEditExpense}
+        onEditExpenseFormChange={tripDetail.updateEditExpenseForm}
+        onExpenseFormChange={(patch) =>
+          tripDetail.setExpenseForm((current) => ({ ...current, ...patch }))
+        }
+        onStartEditingExpense={tripDetail.startEditingExpense}
+      />
+      <BookingsSection
+        bookingForm={tripDetail.bookingForm}
+        bookings={tripDetail.bookings}
+        editBookingForms={tripDetail.editBookingForms}
+        editingBookingId={tripDetail.editingBookingId}
+        onAddBooking={tripDetail.handleAddBooking}
+        onBookingFormChange={(patch) =>
+          tripDetail.setBookingForm((current) => ({ ...current, ...patch }))
+        }
+        onCancelEditingBooking={tripDetail.cancelEditingBooking}
+        onDeleteBooking={tripDetail.handleDeleteBooking}
+        onEditBooking={tripDetail.handleEditBooking}
+        onEditBookingFormChange={tripDetail.updateEditBookingForm}
+        onStartEditingBooking={tripDetail.startEditingBooking}
+      />
+      <DocumentsSection
+        documentForm={tripDetail.documentForm}
+        documents={tripDetail.documents}
+        onAddDocument={tripDetail.handleAddDocument}
+        onDeleteDocument={tripDetail.handleDeleteDocument}
+        onDocumentFormChange={(patch) =>
+          tripDetail.setDocumentForm((current) => ({ ...current, ...patch }))
+        }
+      />
       <ChecklistSection
         checklistForm={tripDetail.checklistForm}
         checklistItems={tripDetail.checklistItems}

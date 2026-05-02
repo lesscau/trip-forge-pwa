@@ -6,18 +6,26 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 
-import type { ChecklistItem, Place, TripDay } from "../../db/database";
+import type { Booking, ChecklistItem, Expense, Place, TripDay } from "../../db/database";
 import {
+  deleteBooking,
   deleteChecklistItem,
   deleteDay,
+  deleteDocument,
+  deleteExpense,
   deletePlace,
   getTrip,
   listBookingsByTrip,
   listChecklistItemsByTrip,
   listDaysByTrip,
+  listDocumentsByTrip,
+  listExpensesByTrip,
   listPlacesByTrip,
+  upsertBooking,
   upsertChecklistItem,
   upsertDay,
+  upsertDocument,
+  upsertExpense,
   upsertPlace,
   updateTrip
 } from "../../db/repositories";
@@ -28,12 +36,18 @@ import { isDateWithinRange } from "../../shared/dateValidation";
 import { getNextOrderIndex } from "../../shared/ordering";
 import {
   EMPTY_CHECKLIST_FORM,
+  EMPTY_BOOKING_FORM,
   EMPTY_DAY_FORM,
+  EMPTY_DOCUMENT_FORM,
+  EMPTY_EXPENSE_FORM,
   EMPTY_INSERT_DAY_FORM,
   EMPTY_PLACE_FORM,
+  type BookingFormValues,
   getLastDayDate,
   type ChecklistFormValues,
   type DayFormValues,
+  type DocumentFormValues,
+  type ExpenseFormValues,
   type InsertDayFormValues,
   type PlaceFormValues,
   type TripDetailSectionData
@@ -44,7 +58,9 @@ export function useTripDetailData(tripId?: string) {
   const [data, setData] = useState<TripDetailSectionData>({
     daysWithPlaces: [],
     places: [],
+    expenses: [],
     bookings: [],
+    documents: [],
     checklistItems: [],
     isLoading: true
   });
@@ -62,6 +78,20 @@ export function useTripDetailData(tripId?: string) {
   >({});
   const [checklistForm, setChecklistForm] =
     useState<ChecklistFormValues>(EMPTY_CHECKLIST_FORM);
+  const [expenseForm, setExpenseForm] =
+    useState<ExpenseFormValues>(EMPTY_EXPENSE_FORM);
+  const [bookingForm, setBookingForm] =
+    useState<BookingFormValues>(EMPTY_BOOKING_FORM);
+  const [documentForm, setDocumentForm] =
+    useState<DocumentFormValues>(EMPTY_DOCUMENT_FORM);
+  const [editingExpenseId, setEditingExpenseId] = useState<string>();
+  const [editExpenseForms, setEditExpenseForms] = useState<
+    Record<string, ExpenseFormValues>
+  >({});
+  const [editingBookingId, setEditingBookingId] = useState<string>();
+  const [editBookingForms, setEditBookingForms] = useState<
+    Record<string, BookingFormValues>
+  >({});
   const [collapsedDayIds, setCollapsedDayIds] = useState<
     Record<string, boolean>
   >({});
@@ -90,26 +120,38 @@ export function useTripDetailData(tripId?: string) {
           trip: undefined,
           daysWithPlaces: [],
           places: [],
+          expenses: [],
           bookings: [],
+          documents: [],
           checklistItems: [],
           isLoading: false
         });
         return;
       }
 
-      const [loadedDays, loadedPlaces, loadedBookings, loadedChecklistItems] =
-        await Promise.all([
-          listDaysByTrip(tripId),
-          listPlacesByTrip(tripId),
-          listBookingsByTrip(tripId),
-          listChecklistItemsByTrip(tripId)
-        ]);
+      const [
+        loadedDays,
+        loadedPlaces,
+        loadedExpenses,
+        loadedBookings,
+        loadedDocuments,
+        loadedChecklistItems
+      ] = await Promise.all([
+        listDaysByTrip(tripId),
+        listPlacesByTrip(tripId),
+        listExpensesByTrip(tripId),
+        listBookingsByTrip(tripId),
+        listDocumentsByTrip(tripId),
+        listChecklistItemsByTrip(tripId)
+      ]);
 
       setData({
         trip: loadedTrip,
         daysWithPlaces: groupPlacesByDay(loadedDays, loadedPlaces),
         places: loadedPlaces,
+        expenses: loadedExpenses,
         bookings: loadedBookings,
+        documents: loadedDocuments,
         checklistItems: loadedChecklistItems,
         isLoading: false
       });
@@ -424,6 +466,215 @@ export function useTripDetailData(tripId?: string) {
     }));
   };
 
+  const handleAddExpense = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!data.trip) {
+      return;
+    }
+
+    const title = expenseForm.title.trim();
+    const amount = Number(expenseForm.amount);
+    const currency = expenseForm.currency.trim().toUpperCase();
+    const category = expenseForm.category.trim();
+
+    if (!title || !Number.isFinite(amount) || amount <= 0 || !currency || !category) {
+      return;
+    }
+
+    await upsertExpense({
+      id: crypto.randomUUID(),
+      tripId: data.trip.id,
+      dayId: expenseForm.dayId || undefined,
+      title,
+      amount,
+      currency,
+      category,
+      paidBy: expenseForm.paidBy.trim() || undefined,
+      createdAt: new Date().toISOString()
+    });
+    setExpenseForm(EMPTY_EXPENSE_FORM);
+    await loadTrip();
+  };
+
+  const handleDeleteExpense = async (expenseId: string) => {
+    await deleteExpense(expenseId);
+    await loadTrip();
+  };
+
+  const startEditingExpense = (expense: Expense) => {
+    setEditingExpenseId(expense.id);
+    setEditExpenseForms((current) => ({
+      ...current,
+      [expense.id]: createExpenseForm(expense)
+    }));
+  };
+
+  const updateEditExpenseForm = (
+    expenseId: string,
+    patch: Partial<ExpenseFormValues>
+  ) => {
+    setEditExpenseForms((current) => ({
+      ...current,
+      [expenseId]: {
+        ...EMPTY_EXPENSE_FORM,
+        ...current[expenseId],
+        ...patch
+      }
+    }));
+  };
+
+  const cancelEditingExpense = () => {
+    setEditingExpenseId(undefined);
+  };
+
+  const handleEditExpense = async (
+    event: FormEvent<HTMLFormElement>,
+    expense: Expense
+  ) => {
+    event.preventDefault();
+
+    const form = editExpenseForms[expense.id] ?? createExpenseForm(expense);
+    const title = form.title.trim();
+    const amount = Number(form.amount);
+    const currency = form.currency.trim().toUpperCase();
+    const category = form.category.trim();
+
+    if (!title || !Number.isFinite(amount) || amount <= 0 || !currency || !category) {
+      return;
+    }
+
+    await upsertExpense({
+      ...expense,
+      dayId: form.dayId || undefined,
+      title,
+      amount,
+      currency,
+      category,
+      paidBy: form.paidBy.trim() || undefined
+    });
+    setEditingExpenseId(undefined);
+    await loadTrip();
+  };
+
+  const handleAddBooking = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!data.trip) {
+      return;
+    }
+
+    const title = bookingForm.title.trim();
+
+    if (!title) {
+      return;
+    }
+
+    await upsertBooking({
+      id: crypto.randomUUID(),
+      tripId: data.trip.id,
+      type: bookingForm.type,
+      title,
+      confirmationCode: bookingForm.confirmationCode.trim() || undefined,
+      startsAt: bookingForm.startsAt || undefined,
+      endsAt: bookingForm.endsAt || undefined,
+      address: bookingForm.address.trim() || undefined,
+      addressZh: bookingForm.addressZh.trim() || undefined,
+      notes: bookingForm.notes.trim() || undefined
+    });
+    setBookingForm(EMPTY_BOOKING_FORM);
+    await loadTrip();
+  };
+
+  const handleDeleteBooking = async (bookingId: string) => {
+    await deleteBooking(bookingId);
+    await loadTrip();
+  };
+
+  const startEditingBooking = (booking: Booking) => {
+    setEditingBookingId(booking.id);
+    setEditBookingForms((current) => ({
+      ...current,
+      [booking.id]: createBookingForm(booking)
+    }));
+  };
+
+  const updateEditBookingForm = (
+    bookingId: string,
+    patch: Partial<BookingFormValues>
+  ) => {
+    setEditBookingForms((current) => ({
+      ...current,
+      [bookingId]: {
+        ...EMPTY_BOOKING_FORM,
+        ...current[bookingId],
+        ...patch
+      }
+    }));
+  };
+
+  const cancelEditingBooking = () => {
+    setEditingBookingId(undefined);
+  };
+
+  const handleEditBooking = async (
+    event: FormEvent<HTMLFormElement>,
+    booking: Booking
+  ) => {
+    event.preventDefault();
+
+    const form = editBookingForms[booking.id] ?? createBookingForm(booking);
+    const title = form.title.trim();
+
+    if (!title) {
+      return;
+    }
+
+    await upsertBooking({
+      ...booking,
+      type: form.type,
+      title,
+      confirmationCode: form.confirmationCode.trim() || undefined,
+      startsAt: form.startsAt || undefined,
+      endsAt: form.endsAt || undefined,
+      address: form.address.trim() || undefined,
+      addressZh: form.addressZh.trim() || undefined,
+      notes: form.notes.trim() || undefined
+    });
+    setEditingBookingId(undefined);
+    await loadTrip();
+  };
+
+  const handleAddDocument = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!data.trip) {
+      return;
+    }
+
+    const title = documentForm.title.trim();
+
+    if (!title) {
+      return;
+    }
+
+    await upsertDocument({
+      id: crypto.randomUUID(),
+      tripId: data.trip.id,
+      title,
+      type: documentForm.type,
+      notes: documentForm.notes.trim() || undefined,
+      createdAt: new Date().toISOString()
+    });
+    setDocumentForm(EMPTY_DOCUMENT_FORM);
+    await loadTrip();
+  };
+
+  const handleDeleteDocument = async (documentId: string) => {
+    await deleteDocument(documentId);
+    await loadTrip();
+  };
+
   const handleAddChecklistItem = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -467,6 +718,13 @@ export function useTripDetailData(tripId?: string) {
     editingPlaceId,
     editPlaceForms,
     checklistForm,
+    expenseForm,
+    bookingForm,
+    documentForm,
+    editingExpenseId,
+    editExpenseForms,
+    editingBookingId,
+    editBookingForms,
     collapsedDayIds,
     updateDayForm,
     handleAddDay,
@@ -485,9 +743,50 @@ export function useTripDetailData(tripId?: string) {
     updateEditPlaceForm,
     cancelEditingPlace,
     handleEditPlace,
+    setExpenseForm,
+    handleAddExpense,
+    handleDeleteExpense,
+    startEditingExpense,
+    updateEditExpenseForm,
+    cancelEditingExpense,
+    handleEditExpense,
+    setBookingForm,
+    handleAddBooking,
+    handleDeleteBooking,
+    startEditingBooking,
+    updateEditBookingForm,
+    cancelEditingBooking,
+    handleEditBooking,
+    setDocumentForm,
+    handleAddDocument,
+    handleDeleteDocument,
     setChecklistForm,
     handleToggleChecklistItem,
     handleAddChecklistItem,
     handleDeleteChecklistItem
+  };
+}
+
+function createExpenseForm(expense: Expense): ExpenseFormValues {
+  return {
+    title: expense.title,
+    amount: expense.amount.toString(),
+    currency: expense.currency,
+    category: expense.category,
+    paidBy: expense.paidBy ?? "",
+    dayId: expense.dayId ?? ""
+  };
+}
+
+function createBookingForm(booking: Booking): BookingFormValues {
+  return {
+    type: booking.type,
+    title: booking.title,
+    confirmationCode: booking.confirmationCode ?? "",
+    startsAt: booking.startsAt ?? "",
+    endsAt: booking.endsAt ?? "",
+    address: booking.address ?? "",
+    addressZh: booking.addressZh ?? "",
+    notes: booking.notes ?? ""
   };
 }

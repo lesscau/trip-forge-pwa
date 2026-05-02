@@ -77,7 +77,9 @@ export const ru = {
     emptyDays: "В маршруте пока нет дней.",
     emptyDayPlaces: "На этот день пока нет мест.",
     emptyPlaces: "В поездке пока нет мест.",
+    emptyExpenses: "В поездке пока нет расходов.",
     emptyBookings: "В поездке пока нет бронирований.",
+    emptyDocuments: "В поездке пока нет документов.",
     emptyChecklist: "В чеклисте пока нет пунктов.",
     confirmDeleteDay:
       "Удалить день маршрута? Связанные места, бронирования и заметки тоже будут удалены.",
@@ -92,7 +94,9 @@ export const ru = {
     sections: {
       itinerary: "Маршрут",
       places: "Места",
+      expenses: "Расходы",
       bookings: "Бронирования",
+      documents: "Документы",
       checklist: "Чеклист"
     },
     dayForm: {
@@ -123,7 +127,43 @@ export const ru = {
     checklistForm: {
       title: "Пункт чеклиста",
       category: "Категория",
+      noCategory: "Без категории",
       submit: "Добавить пункт"
+    },
+    expenseForm: {
+      title: "Название",
+      amount: "Сумма",
+      currency: "Валюта",
+      category: "Категория",
+      paidBy: "Кто оплатил",
+      dayId: "День маршрута",
+      noDay: "Без привязки к дню",
+      submit: "Добавить расход"
+    },
+    expenseTotals: {
+      byCurrency: "Итого по валютам",
+      byCategory: "Итого по категориям"
+    },
+    bookingForm: {
+      type: "Тип",
+      title: "Название",
+      confirmationCode: "Код подтверждения",
+      startsAt: "Начало",
+      endsAt: "Окончание",
+      address: "Адрес",
+      addressZh: "Адрес на китайском",
+      notes: "Заметки",
+      submit: "Добавить бронь"
+    },
+    bookingActions: {
+      copyConfirmationCode: "Копировать код подтверждения",
+      copyChineseAddress: "Копировать адрес на китайском"
+    },
+    documentForm: {
+      type: "Тип",
+      title: "Название",
+      notes: "Заметки",
+      submit: "Добавить документ"
     }
   },
   tripPlaces: {
@@ -249,6 +289,14 @@ export const ru = {
     train: "Поезд",
     flight: "Самолёт",
     attraction: "Достопримечательность",
+    other: "Другое"
+  },
+  travelDocumentTypes: {
+    passport: "Паспорт",
+    visa: "Виза",
+    insurance: "Страховка",
+    ticket: "Билет",
+    booking: "Бронь",
     other: "Другое"
   }
 } as const;

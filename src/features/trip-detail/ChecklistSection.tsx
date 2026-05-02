@@ -22,6 +22,7 @@ export function ChecklistSection({
   onDeleteChecklistItem
 }: ChecklistSectionProps) {
   const { t } = useTranslation();
+  const groupedItems = groupChecklistItems(checklistItems);
 
   return (
     <section className="data-section">
@@ -58,26 +59,53 @@ export function ChecklistSection({
       {checklistItems.length === 0 ? (
         <p className="muted-text">{t("tripDetail.emptyChecklist")}</p>
       ) : (
-        <div className="checklist-list">
-          {checklistItems.map((item) => (
-            <label className="checklist-row" key={item.id}>
-              <input
-                checked={item.completed}
-                onChange={() => void onToggleChecklistItem(item)}
-                type="checkbox"
-              />
-              <span>{item.title}</span>
-              <button
-                className="danger-action"
-                onClick={() => void onDeleteChecklistItem(item.id)}
-                type="button"
-              >
-                {t("common.delete")}
-              </button>
-            </label>
+        <div className="places-group-list">
+          {groupedItems.map((group) => (
+            <section className="places-group" key={group.category}>
+              <h3>
+                {group.category === emptyCategory
+                  ? t("tripDetail.checklistForm.noCategory")
+                  : group.category}
+              </h3>
+              <div className="checklist-list">
+                {group.items.map((item) => (
+                  <label className="checklist-row" key={item.id}>
+                    <input
+                      checked={item.completed}
+                      onChange={() => void onToggleChecklistItem(item)}
+                      type="checkbox"
+                    />
+                    <span>{item.title}</span>
+                    <button
+                      className="danger-action"
+                      onClick={() => void onDeleteChecklistItem(item.id)}
+                      type="button"
+                    >
+                      {t("common.delete")}
+                    </button>
+                  </label>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       )}
     </section>
   );
+}
+
+const emptyCategory = "__empty_category__";
+
+function groupChecklistItems(checklistItems: ChecklistItem[]) {
+  const groups = new Map<string, ChecklistItem[]>();
+
+  for (const item of checklistItems) {
+    const category = item.category?.trim() || emptyCategory;
+    groups.set(category, [...(groups.get(category) ?? []), item]);
+  }
+
+  return Array.from(groups, ([category, items]) => ({
+    category,
+    items
+  })).sort((left, right) => left.category.localeCompare(right.category));
 }

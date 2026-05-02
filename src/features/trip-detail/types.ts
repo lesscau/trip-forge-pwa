@@ -1,10 +1,14 @@
 import type {
   Booking,
+  BookingType,
   ChecklistItem,
+  Expense,
   Place,
   PlaceCategory,
   Trip,
-  TripDay
+  TripDay,
+  TravelDocument,
+  TravelDocumentType
 } from "../../db/database";
 import type { DayWithPlaces } from "../../app/tripDetailData";
 
@@ -30,11 +34,39 @@ export type ChecklistFormValues = {
   category: string;
 };
 
+export type ExpenseFormValues = {
+  title: string;
+  amount: string;
+  currency: string;
+  category: string;
+  paidBy: string;
+  dayId: string;
+};
+
+export type BookingFormValues = {
+  type: BookingType;
+  title: string;
+  confirmationCode: string;
+  startsAt: string;
+  endsAt: string;
+  address: string;
+  addressZh: string;
+  notes: string;
+};
+
+export type DocumentFormValues = {
+  type: TravelDocumentType;
+  title: string;
+  notes: string;
+};
+
 export type TripDetailViewData = {
   trip?: Trip;
   daysWithPlaces: DayWithPlaces[];
   places: Place[];
+  expenses: Expense[];
   bookings: Booking[];
+  documents: TravelDocument[];
   checklistItems: ChecklistItem[];
 };
 
@@ -68,6 +100,32 @@ export const EMPTY_PLACE_FORM: PlaceFormValues = {
 export const EMPTY_CHECKLIST_FORM: ChecklistFormValues = {
   title: "",
   category: ""
+};
+
+export const EMPTY_EXPENSE_FORM: ExpenseFormValues = {
+  title: "",
+  amount: "",
+  currency: "CNY",
+  category: "",
+  paidBy: "",
+  dayId: ""
+};
+
+export const EMPTY_BOOKING_FORM: BookingFormValues = {
+  type: "hotel",
+  title: "",
+  confirmationCode: "",
+  startsAt: "",
+  endsAt: "",
+  address: "",
+  addressZh: "",
+  notes: ""
+};
+
+export const EMPTY_DOCUMENT_FORM: DocumentFormValues = {
+  type: "passport",
+  title: "",
+  notes: ""
 };
 
 export function getLastDayDate(days: TripDay[]): string | undefined {

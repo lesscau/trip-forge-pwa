@@ -200,13 +200,15 @@ button {
 .today-layout,
 .timeline-list,
 .settings-list,
-.storage-details {
+.storage-details,
+.summary-grid {
   display: grid;
   gap: 1rem;
 }
 
 .card-grid,
-.today-layout {
+.today-layout,
+.summary-grid {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
@@ -582,6 +584,28 @@ button {
   margin: 0;
   color: #172026;
   font-weight: 750;
+}
+
+.totals-list {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.totals-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.totals-list dt,
+.totals-list dd {
+  margin: 0;
+}
+
+.totals-list dd {
+  color: #172026;
+  font-weight: 800;
 }
 
 .storage-action {
