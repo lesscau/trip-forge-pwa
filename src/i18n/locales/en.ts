@@ -6,7 +6,8 @@ export const en = {
     unsupported: "Unsupported",
     enabled: "Enabled",
     notEnabled: "Not enabled",
-    loading: "Loading..."
+    loading: "Loading...",
+    delete: "Delete"
   },
   nav: {
     home: "Home",
@@ -42,6 +43,7 @@ export const en = {
     loadError: "Unable to load trips",
     createDemoError: "Unable to create demo trip",
     createTripError: "Unable to create trip",
+    invalidDateRange: "End date cannot be earlier than start date.",
     cardDescription:
       "Open day-by-day planning, places, bookings, and notes.",
     form: {
@@ -80,6 +82,27 @@ export const en = {
       places: "Places",
       bookings: "Bookings",
       checklist: "Checklist"
+    },
+    dayForm: {
+      date: "Date",
+      city: "City",
+      summary: "Summary",
+      submit: "Add day"
+    },
+    placeForm: {
+      dayId: "Itinerary day",
+      noDay: "No day",
+      name: "Name",
+      nameZh: "Chinese name",
+      address: "Address",
+      addressZh: "Chinese address",
+      notes: "Notes",
+      submit: "Add place"
+    },
+    checklistForm: {
+      title: "Checklist item",
+      category: "Category",
+      submit: "Add item"
     }
   },
   today: {

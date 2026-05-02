@@ -110,17 +110,6 @@ export type TripForgeDatabase = Dexie & {
 export const db = new Dexie("tripforge") as TripForgeDatabase;
 
 db.version(1).stores({
-  trips: "id, name, startsOn, endsOn",
-  tripDays: "id, tripId, date",
-  places: "id, tripId, name",
-  expenses: "id, tripId, spentOn",
-  bookings: "id, tripId, startsAt",
-  travelDocuments: "id, tripId, documentType",
-  notes: "id, tripId, title",
-  checklistItems: "id, tripId, isDone"
-});
-
-db.version(2).stores({
   trips: "id, title, destinationCountry, startDate, endDate, updatedAt",
   tripDays: "id, tripId, date, orderIndex, [tripId+orderIndex], [tripId+date]",
   places: "id, tripId, dayId, orderIndex, [tripId+orderIndex], [dayId+orderIndex]",

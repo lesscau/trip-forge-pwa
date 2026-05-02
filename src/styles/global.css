@@ -227,6 +227,7 @@ button {
 }
 
 .form-panel,
+.compact-form,
 .data-section {
   display: grid;
   gap: 1rem;
@@ -247,7 +248,8 @@ button {
   font-size: 1.35rem;
 }
 
-.form-panel label {
+.form-panel label,
+.compact-form label {
   display: grid;
   gap: 0.35rem;
   color: #52635f;
@@ -255,7 +257,9 @@ button {
   font-weight: 750;
 }
 
-.form-panel input {
+.form-panel input,
+.compact-form input,
+.compact-form select {
   width: 100%;
   min-height: 2.75rem;
   border: 1px solid #c7d8d2;
@@ -263,6 +267,28 @@ button {
   color: #172026;
   font: inherit;
   padding: 0.65rem 0.75rem;
+}
+
+.compact-form {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  align-items: end;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.danger-action {
+  justify-self: start;
+  min-height: 2.35rem;
+  border: 1px solid #f0b8b8;
+  border-radius: 0.5rem;
+  background: #fff7f7;
+  color: #9f1d1d;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  padding: 0.45rem 0.75rem;
 }
 
 .form-grid {
@@ -285,7 +311,7 @@ button {
 
 .checklist-row {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.65rem;
   min-height: 2.75rem;

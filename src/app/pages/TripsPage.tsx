@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { createDemoChinaTrip } from "../../db/demoSeed";
 import { createTrip, listTrips } from "../../db/repositories";
 import type { Trip } from "../../db/database";
+import { isValidDateRange } from "../../shared/dateValidation";
 import { formatTripDateRange } from "../../shared/format";
 
 export function TripsPage() {
@@ -56,6 +57,11 @@ export function TripsPage() {
   const handleCreateTrip = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(undefined);
+
+    if (!isValidDateRange(formData.startDate, formData.endDate)) {
+      setErrorMessage(t("trips.invalidDateRange"));
+      return;
+    }
 
     try {
       const trip = await createTrip(formData);

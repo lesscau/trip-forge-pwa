@@ -1,6 +1,5 @@
 import { db } from "./database";
 import type { Booking, ChecklistItem, Place, Trip, TripDay } from "./database";
-import { createTrip, getTrip } from "./repositories";
 
 export type DemoChinaTrip = {
   trip: Trip;
@@ -17,7 +16,7 @@ function nowIso(): string {
 }
 
 export async function createDemoChinaTrip(): Promise<DemoChinaTrip> {
-  const existingTrip = await getTrip(demoTripId);
+  const existingTrip = await db.trips.get(demoTripId);
 
   if (existingTrip) {
     const [days, places, checklistItems, bookings] = await Promise.all([
@@ -38,16 +37,13 @@ export async function createDemoChinaTrip(): Promise<DemoChinaTrip> {
     };
   }
 
-  const createdTrip = await createTrip({
+  const timestamp = nowIso();
+  const trip: Trip = {
+    id: demoTripId,
     title: "Китай 2026",
     destinationCountry: "China",
     startDate: "2026-05-02",
-    endDate: "2026-05-10"
-  });
-  const timestamp = nowIso();
-  const trip: Trip = {
-    ...createdTrip,
-    id: demoTripId,
+    endDate: "2026-05-10",
     createdAt: timestamp,
     updatedAt: timestamp
   };
@@ -174,7 +170,6 @@ export async function createDemoChinaTrip(): Promise<DemoChinaTrip> {
     "rw",
     [db.trips, db.tripDays, db.places, db.checklistItems, db.bookings],
     async () => {
-      await db.trips.delete(createdTrip.id);
       await db.trips.put(trip);
       await db.tripDays.bulkPut(days);
       await db.places.bulkPut(places);

@@ -6,7 +6,8 @@ export const ru = {
     unsupported: "Не поддерживается",
     enabled: "Включено",
     notEnabled: "Не включено",
-    loading: "Загрузка..."
+    loading: "Загрузка...",
+    delete: "Удалить"
   },
   nav: {
     home: "Главная",
@@ -42,6 +43,7 @@ export const ru = {
     loadError: "Не удалось загрузить поездки",
     createDemoError: "Не удалось создать демо-поездку",
     createTripError: "Не удалось создать поездку",
+    invalidDateRange: "Дата окончания не может быть раньше даты начала.",
     cardDescription:
       "Откройте план по дням, места, бронирования и заметки.",
     form: {
@@ -80,6 +82,27 @@ export const ru = {
       places: "Места",
       bookings: "Бронирования",
       checklist: "Чеклист"
+    },
+    dayForm: {
+      date: "Дата",
+      city: "Город",
+      summary: "Краткое описание",
+      submit: "Добавить день"
+    },
+    placeForm: {
+      dayId: "День маршрута",
+      noDay: "Без привязки к дню",
+      name: "Название",
+      nameZh: "Название на китайском",
+      address: "Адрес",
+      addressZh: "Адрес на китайском",
+      notes: "Заметки",
+      submit: "Добавить место"
+    },
+    checklistForm: {
+      title: "Пункт чеклиста",
+      category: "Категория",
+      submit: "Добавить пункт"
     }
   },
   today: {

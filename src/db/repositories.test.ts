@@ -6,11 +6,17 @@ import { db } from "./database";
 import { createDemoChinaTrip } from "./demoSeed";
 import {
   createTrip,
+  deleteDay,
   getTrip,
+  listBookingsByTrip,
   listDaysByTrip,
+  listNotesByTrip,
+  listPlacesByTrip,
   listPlacesByDay,
   listTrips,
+  upsertBooking,
   upsertDay,
+  upsertNote,
   upsertPlace
 } from "./repositories";
 import { bookingSchema, tripSchema } from "./validation";
@@ -135,7 +141,57 @@ describe("trip repositories", () => {
     await createDemoChinaTrip();
     await createDemoChinaTrip();
 
-    await expect(listTrips()).resolves.toHaveLength(1);
+    await expect(listTrips()).resolves.toMatchObject([
+      { id: "demo-china-2026" }
+    ]);
+  });
+
+  it("deletes day-linked places, bookings, and notes", async () => {
+    const trip = await createTrip({
+      title: "Delete Day Test",
+      destinationCountry: "China",
+      startDate: "2026-05-02",
+      endDate: "2026-05-10"
+    });
+    const dayId = "delete-day";
+
+    await upsertDay({
+      id: dayId,
+      tripId: trip.id,
+      date: "2026-05-02",
+      city: "Beijing",
+      orderIndex: 0
+    });
+    await upsertPlace({
+      id: "place",
+      tripId: trip.id,
+      dayId,
+      name: "Place",
+      orderIndex: 0
+    });
+    await upsertBooking({
+      id: "booking",
+      tripId: trip.id,
+      dayId,
+      type: "hotel",
+      title: "Hotel"
+    });
+    await upsertNote({
+      id: "note",
+      tripId: trip.id,
+      dayId,
+      title: "Note",
+      content: "Content",
+      createdAt: "2026-01-01T00:00:00.000Z",
+      updatedAt: "2026-01-01T00:00:00.000Z"
+    });
+
+    await deleteDay(dayId);
+
+    await expect(listDaysByTrip(trip.id)).resolves.toHaveLength(0);
+    await expect(listPlacesByTrip(trip.id)).resolves.toHaveLength(0);
+    await expect(listBookingsByTrip(trip.id)).resolves.toHaveLength(0);
+    await expect(listNotesByTrip(trip.id)).resolves.toHaveLength(0);
   });
 
   it("validates domain entities with Zod", async () => {

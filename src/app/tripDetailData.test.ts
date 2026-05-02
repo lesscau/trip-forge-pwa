@@ -44,4 +44,27 @@ describe("trip detail data grouping", () => {
       }
     ]);
   });
+
+  it("includes a newly added place with dayId in that day group", () => {
+    const days: TripDay[] = [
+      {
+        id: "day-1",
+        tripId: "trip",
+        date: "2026-05-02",
+        city: "Beijing",
+        orderIndex: 0
+      }
+    ];
+    const addedPlace: Place = {
+      id: "added",
+      tripId: "trip",
+      dayId: "day-1",
+      name: "Added place",
+      orderIndex: 0
+    };
+
+    expect(groupPlacesByDay(days, [addedPlace])[0]?.places).toEqual([
+      addedPlace
+    ]);
+  });
 });
