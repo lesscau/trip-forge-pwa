@@ -92,10 +92,10 @@ The PWA manifest uses relative `start_url`, `scope`, and icon paths so the app w
 
 ```text
 src/
-  app/       App shell, routing, and pages
+  app/       App shell, routing, pages, and app-level selection helpers
   db/        Dexie database, domain types, repositories, Zod schemas, demo seed
   export/    JSON backup payload validation
-  features/  Product feature modules
+  features/  Product feature modules, including Trip Detail components and hooks
   maps/      Map link helpers
   shared/    Shared UI and utilities
   styles/    Global styles
@@ -114,4 +114,4 @@ Core screens are connected to local IndexedDB data:
 
 - `/trips` lists stored trips, creates a simple trip, and can seed a demo China trip.
 - `/trips/:tripId` loads and edits trip details, itinerary days, places, bookings, and checklist items. It supports adding and deleting days, adding and deleting places, and adding, toggling, and deleting checklist items.
-- `/today` selects the active trip for the current date and shows the exact day or nearest future day.
+- `/today` selects the active trip for the current date and shows the exact day, nearest future day, or latest past planned day.

@@ -142,6 +142,11 @@ export const ru = {
     openTrips: "Открыть поездки",
     currentDay: "Текущий день",
     nearestFutureDay: "Ближайший будущий день",
+    selectedDayKinds: {
+      exact: "Текущий день",
+      future: "Ближайший будущий день",
+      past: "Последний запланированный день"
+    },
     emptyPlaces: "На выбранный день пока нет мест.",
     emptyBookings: "На выбранный день пока нет бронирований.",
     emptyChecklist: "В поездке пока нет чеклиста."

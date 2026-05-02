@@ -74,7 +74,7 @@ describe("today selection", () => {
     expect(selection).toMatchObject({
       status: "active",
       day: { id: "day-1" },
-      isExactDay: true,
+      selectedDayKind: "exact",
       places: [{ id: "place" }],
       bookings: [{ id: "booking" }],
       checklistItems: [{ id: "check" }]
@@ -94,7 +94,7 @@ describe("today selection", () => {
     expect(selection).toMatchObject({
       status: "active",
       day: { id: "day-2" },
-      isExactDay: false
+      selectedDayKind: "future"
     });
   });
 
@@ -111,7 +111,7 @@ describe("today selection", () => {
     expect(selection).toMatchObject({
       status: "active",
       day: { id: "day-2" },
-      isExactDay: false
+      selectedDayKind: "past"
     });
   });
 

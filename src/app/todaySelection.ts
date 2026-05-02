@@ -9,12 +9,14 @@ export type TodaySelectionInput = {
   today: string;
 };
 
+export type SelectedDayKind = "exact" | "future" | "past";
+
 export type TodaySelection =
   | {
       status: "active";
       trip: Trip;
       day: TripDay;
-      isExactDay: boolean;
+      selectedDayKind: SelectedDayKind;
       places: Place[];
       bookings: Booking[];
       checklistItems: ChecklistItem[];
@@ -63,6 +65,11 @@ export function selectTodayTrip(input: TodaySelectionInput): TodaySelection {
     .reverse()
     .find((day) => day.date < input.today);
   const selectedDay = exactDay ?? nearestFutureDay ?? latestPastDay;
+  const selectedDayKind: SelectedDayKind = exactDay
+    ? "exact"
+    : nearestFutureDay
+      ? "future"
+      : "past";
 
   if (!selectedDay) {
     return { status: "none" };
@@ -72,7 +79,7 @@ export function selectTodayTrip(input: TodaySelectionInput): TodaySelection {
     status: "active",
     trip: activeTrip,
     day: selectedDay,
-    isExactDay: Boolean(exactDay),
+    selectedDayKind,
     places: input.places
       .filter((place) => place.tripId === activeTrip.id && place.dayId === selectedDay.id)
       .sort(byOrderIndex),

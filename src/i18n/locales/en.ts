@@ -142,6 +142,11 @@ export const en = {
     openTrips: "Open trips",
     currentDay: "Current day",
     nearestFutureDay: "Nearest future day",
+    selectedDayKinds: {
+      exact: "Current day",
+      future: "Nearest future day",
+      past: "Last planned day"
+    },
     emptyPlaces: "No places for the selected day yet.",
     emptyBookings: "No bookings for the selected day yet.",
     emptyChecklist: "No checklist items for this trip yet."

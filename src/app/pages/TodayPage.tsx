@@ -105,9 +105,7 @@ export function TodayPage() {
         <>
           <article className="focus-card">
             <span>
-              {selection.isExactDay
-                ? t("today.currentDay")
-                : t("today.nearestFutureDay")}
+              {t(`today.selectedDayKinds.${selection.selectedDayKind}`)}
             </span>
             <strong>{selection.trip.title}</strong>
             <p>
