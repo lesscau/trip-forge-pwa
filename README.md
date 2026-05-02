@@ -16,6 +16,7 @@ The interface language defaults to Russian with English as a fallback. The selec
 - React Router
 - i18next and react-i18next
 - PWA service worker and web app manifest
+- Leaflet and react-leaflet for the embedded places overview map
 - IndexedDB via Dexie
 - Zod for runtime validation of imported backup data
 - Vitest
@@ -114,5 +115,5 @@ Core screens are connected to local IndexedDB data:
 
 - `/trips` lists stored trips, creates a simple trip, and can seed a demo China trip.
 - `/trips/:tripId` loads and edits trip details, itinerary days, places, bookings, and checklist items. It supports adding and deleting days, adding and deleting places, and adding, toggling, and deleting checklist items.
-- `/trips/:tripId/places` shows all places for a trip with search, city, category, day filters, filter reset, city/category/no grouping modes, inline place editing, copy actions, and Amap search links.
+- `/trips/:tripId/places` shows all places for a trip with an OpenStreetMap overview map, search, city, category, day filters, filter reset, city/category/no grouping modes, inline place editing, copy actions, and Amap search links. The embedded map uses stored `lat`/`lng` coordinates, shows markers without an API key, and draws a day route line only when a day filter has at least two mapped places.
 - `/today` selects the active trip for the current date and shows the exact day, nearest future day, or latest past planned day.

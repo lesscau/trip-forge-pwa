@@ -5,6 +5,7 @@ import { registerSW } from "virtual:pwa-register";
 
 import { App } from "./app/App";
 import "./i18n";
+import "leaflet/dist/leaflet.css";
 import "./styles/global.css";
 
 registerSW({ immediate: true });

@@ -16,6 +16,7 @@ import {
   placeCategories
 } from "../../features/places/placeCategories";
 import { PlaceActions } from "../../features/places/PlaceActions";
+import { TripPlacesMap } from "../../features/places/TripPlacesMap";
 import {
   filterPlaces,
   getPlaceDayLabel,
@@ -42,6 +43,8 @@ type TripPlacesPlaceForm = {
   nameZh: string;
   address: string;
   addressZh: string;
+  lat: string;
+  lng: string;
   notes: string;
 };
 
@@ -193,6 +196,8 @@ export function TripPlacesPage() {
       nameZh: form.nameZh.trim() || undefined,
       address: form.address.trim() || undefined,
       addressZh: form.addressZh.trim() || undefined,
+      lat: parseOptionalCoordinate(form.lat),
+      lng: parseOptionalCoordinate(form.lng),
       notes: form.notes.trim() || undefined
     };
 
@@ -341,6 +346,12 @@ export function TripPlacesPage() {
           </button>
         </div>
 
+        <TripPlacesMap
+          places={filteredPlaces}
+          routePlaces={filters.dayId ? filteredPlaces : []}
+          showRoute={Boolean(filters.dayId)}
+        />
+
         {state.places.length === 0 ? (
           <p className="muted-text">{t("tripDetail.emptyPlaces")}</p>
         ) : filteredPlaces.length === 0 ? (
@@ -385,8 +396,21 @@ function createPlaceForm(place?: Place): TripPlacesPlaceForm {
     nameZh: place?.nameZh ?? "",
     address: place?.address ?? "",
     addressZh: place?.addressZh ?? "",
+    lat: place?.lat?.toString() ?? "",
+    lng: place?.lng?.toString() ?? "",
     notes: place?.notes ?? ""
   };
+}
+
+function parseOptionalCoordinate(value: string): number | undefined {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return undefined;
+  }
+
+  const coordinate = Number(trimmedValue);
+  return Number.isFinite(coordinate) ? coordinate : undefined;
 }
 
 function getGroupLabel(
@@ -518,6 +542,28 @@ function PlaceListCard({
               }
               type="text"
               value={formValues.addressZh}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.placeForm.lat")}</span>
+            <input
+              onChange={(event) =>
+                onEditFormChange(place.id, { lat: event.target.value })
+              }
+              step="any"
+              type="number"
+              value={formValues.lat}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.placeForm.lng")}</span>
+            <input
+              onChange={(event) =>
+                onEditFormChange(place.id, { lng: event.target.value })
+              }
+              step="any"
+              type="number"
+              value={formValues.lng}
             />
           </label>
           <label>

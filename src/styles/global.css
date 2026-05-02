@@ -335,6 +335,32 @@ button {
   gap: 0.45rem;
 }
 
+.map-panel {
+  overflow: hidden;
+  min-height: 16rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: #ffffff;
+}
+
+.map-panel > .muted-text {
+  padding: 1rem;
+}
+
+.leaflet-map-container {
+  width: 100%;
+  min-height: 20rem;
+}
+
+.place-map-popup {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.place-map-popup p {
+  margin: 0;
+}
+
 .copy-action {
   display: inline-grid;
   gap: 0.25rem;

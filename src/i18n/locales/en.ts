@@ -115,6 +115,8 @@ export const en = {
       nameZh: "Chinese name",
       address: "Address",
       addressZh: "Chinese address",
+      lat: "Latitude",
+      lng: "Longitude",
       notes: "Notes",
       submit: "Add place"
     },
@@ -151,6 +153,10 @@ export const en = {
       city: "City",
       category: "Place type",
       none: "No grouping"
+    },
+    map: {
+      label: "Places map",
+      noCoordinates: "No places with coordinates yet."
     }
   },
   copy: {

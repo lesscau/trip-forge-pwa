@@ -115,6 +115,8 @@ export const ru = {
       nameZh: "Название на китайском",
       address: "Адрес",
       addressZh: "Адрес на китайском",
+      lat: "Широта",
+      lng: "Долгота",
       notes: "Заметки",
       submit: "Добавить место"
     },
@@ -153,6 +155,10 @@ export const ru = {
       city: "Город",
       category: "Тип места",
       none: "Без группировки"
+    },
+    map: {
+      label: "Карта мест",
+      noCoordinates: "Пока нет мест с координатами."
     }
   },
   copy: {
