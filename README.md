@@ -93,10 +93,19 @@ The PWA manifest uses relative `start_url`, `scope`, and icon paths so the app w
 ```text
 src/
   app/       App shell, routing, and pages
-  db/        IndexedDB/Dexie setup and local data types
-  export/    JSON backup import/export validation
+  db/        Dexie database, domain types, repositories, Zod schemas, demo seed
+  export/    JSON backup payload validation
   features/  Product feature modules
   maps/      Map link helpers
   shared/    Shared UI and utilities
   styles/    Global styles
 ```
+
+## Local Data Layer
+
+TripForge stores application data locally in IndexedDB through Dexie. The data layer is in `src/db`:
+
+- `database.ts` defines the versioned IndexedDB schema and domain entity types.
+- `repositories.ts` exposes local repository functions for trips, days, places, expenses, bookings, documents, notes, and checklist items.
+- `validation.ts` contains Zod schemas for runtime validation.
+- `demoSeed.ts` creates the demo China 2026 trip used by the Trips screen.

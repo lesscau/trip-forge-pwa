@@ -1,18 +1,11 @@
 import { z } from "zod";
 
-const tripSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  startsOn: z.string().optional(),
-  endsOn: z.string().optional(),
-  createdAt: z.string(),
-  updatedAt: z.string()
-});
+import { tripForgeDataSchema } from "../db/validation";
 
 export const backupSchema = z.object({
   version: z.literal(1),
   exportedAt: z.string(),
-  trips: z.array(tripSchema)
+  data: tripForgeDataSchema
 });
 
 export type BackupPayload = z.infer<typeof backupSchema>;

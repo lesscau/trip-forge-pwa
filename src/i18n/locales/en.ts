@@ -33,6 +33,11 @@ export const en = {
     title: "Trips",
     sampleName: "China 2026",
     sampleDates: "Beijing, Xi'an, Shanghai",
+    createDemo: "Create demo trip",
+    loading: "Loading trips...",
+    empty: "No trips yet. Create a demo trip to inspect the structure.",
+    loadError: "Unable to load trips",
+    createDemoError: "Unable to create demo trip",
     cardDescription:
       "Open day-by-day planning, places, bookings, and notes."
   },

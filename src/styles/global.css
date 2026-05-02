@@ -318,6 +318,12 @@ button {
   padding-left: 0.75rem;
 }
 
+.muted-text {
+  margin: 0;
+  color: #52635f;
+  line-height: 1.6;
+}
+
 @media (max-width: 720px) {
   .top-bar {
     align-items: flex-start;
