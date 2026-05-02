@@ -21,7 +21,9 @@ describe("storage status helpers", () => {
   });
 
   it("reports unsupported storage API", async () => {
-    await expect(readStorageStatus({} as Navigator)).resolves.toEqual({
+    await expect(
+      readStorageStatus("Storage failed", {} as Navigator)
+    ).resolves.toEqual({
       isSupported: false
     });
   });

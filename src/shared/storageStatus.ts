@@ -43,11 +43,12 @@ export function calculateUsagePercent(
   return Math.min(100, Math.round((usage / quota) * 100));
 }
 
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Storage API request failed";
+function getErrorMessage(error: unknown, fallbackMessage: string): string {
+  return error instanceof Error ? error.message : fallbackMessage;
 }
 
 export async function readStorageStatus(
+  fallbackErrorMessage = "Unable to read storage status",
   browserNavigator: Navigator = navigator
 ): Promise<StorageStatus> {
   const storage = browserNavigator.storage;
@@ -68,12 +69,13 @@ export async function readStorageStatus(
   } catch (error) {
     return {
       isSupported: true,
-      error: getErrorMessage(error)
+      error: getErrorMessage(error, fallbackErrorMessage)
     };
   }
 }
 
 export async function requestPersistentStorage(
+  fallbackErrorMessage = "Storage API request failed",
   browserNavigator: Navigator = navigator
 ): Promise<PersistentStorageRequestResult> {
   const storage = browserNavigator.storage;
@@ -90,7 +92,7 @@ export async function requestPersistentStorage(
   } catch (error) {
     return {
       isSupported: true,
-      error: getErrorMessage(error)
+      error: getErrorMessage(error, fallbackErrorMessage)
     };
   }
 }

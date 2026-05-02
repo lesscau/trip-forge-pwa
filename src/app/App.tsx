@@ -1,4 +1,5 @@
 import { NavLink, Route, Routes } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { HomePage } from "./pages/HomePage";
 import { SettingsPage } from "./pages/SettingsPage";
@@ -7,20 +8,22 @@ import { TripDetailPage } from "./pages/TripDetailPage";
 import { TripsPage } from "./pages/TripsPage";
 
 const navItems = [
-  { to: "/", label: "Home" },
-  { to: "/today", label: "Today" },
-  { to: "/trips", label: "Trips" },
-  { to: "/settings", label: "Settings" }
+  { to: "/", labelKey: "nav.home" },
+  { to: "/today", labelKey: "nav.today" },
+  { to: "/trips", labelKey: "nav.trips" },
+  { to: "/settings", labelKey: "nav.settings" }
 ];
 
 export function App() {
+  const { t } = useTranslation();
+
   return (
     <div className="app-shell">
       <header className="top-bar">
-        <NavLink className="brand" to="/" aria-label="TripForge home">
-          TripForge
+        <NavLink className="brand" to="/" aria-label={t("nav.homeAria")}>
+          {t("common.appName")}
         </NavLink>
-        <nav className="main-nav" aria-label="Primary navigation">
+        <nav className="main-nav" aria-label={t("nav.primaryLabel")}>
           {navItems.map((item) => (
             <NavLink
               className={({ isActive }) =>
@@ -30,7 +33,7 @@ export function App() {
               to={item.to}
               end={item.to === "/"}
             >
-              {item.label}
+              {t(item.labelKey)}
             </NavLink>
           ))}
         </nav>

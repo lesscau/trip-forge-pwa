@@ -226,6 +226,7 @@ button {
   cursor: pointer;
 }
 
+.language-panel,
 .storage-panel {
   display: grid;
   gap: 1rem;
@@ -236,16 +237,41 @@ button {
   padding: 1rem;
 }
 
+.language-panel h2,
 .storage-panel h2 {
   margin: 0.25rem 0 0;
   color: #172026;
   font-size: 1.35rem;
 }
 
+.language-panel p,
 .storage-panel p {
   margin: 0;
   color: #52635f;
   line-height: 1.6;
+}
+
+.language-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.language-option {
+  min-height: 2.6rem;
+  border: 1px solid #c7d8d2;
+  border-radius: 0.7rem;
+  background: #ffffff;
+  color: #172026;
+  cursor: pointer;
+  font-weight: 750;
+  padding: 0.65rem 0.9rem;
+}
+
+.language-option-active {
+  border-color: #0f766e;
+  background: #d9f4ed;
+  color: #0d5f58;
 }
 
 .storage-details {

@@ -1,20 +1,24 @@
+import { useTranslation } from "react-i18next";
+
 export function TodayPage() {
+  const { t } = useTranslation();
+
   return (
     <section className="content-section">
       <div className="section-heading">
-        <p className="eyebrow">Travel day</p>
-        <h1>Today</h1>
+        <p className="eyebrow">{t("today.eyebrow")}</p>
+        <h1>{t("today.title")}</h1>
       </div>
       <div className="today-layout">
         <article className="focus-card">
-          <span>Next stop</span>
-          <strong>Hotel check-in</strong>
-          <p>Keep key addresses, bookings, and checklist items within reach.</p>
+          <span>{t("today.nextStop")}</span>
+          <strong>{t("today.checkInTitle")}</strong>
+          <p>{t("today.checkInDescription")}</p>
         </article>
         <article className="focus-card">
-          <span>Backup</span>
-          <strong>Export JSON</strong>
-          <p>Offline backup and restore flows belong in the app settings.</p>
+          <span>{t("today.backup")}</span>
+          <strong>{t("today.exportJson")}</strong>
+          <p>{t("today.backupDescription")}</p>
         </article>
       </div>
     </section>

@@ -1,26 +1,29 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const sampleTrips = [
   {
     id: "china-2026",
-    name: "China 2026",
-    dates: "Beijing, Xi'an, Shanghai"
+    nameKey: "trips.sampleName",
+    datesKey: "trips.sampleDates"
   }
 ];
 
 export function TripsPage() {
+  const { t } = useTranslation();
+
   return (
     <section className="content-section">
       <div className="section-heading">
-        <p className="eyebrow">Itinerary</p>
-        <h1>Trips</h1>
+        <p className="eyebrow">{t("trips.eyebrow")}</p>
+        <h1>{t("trips.title")}</h1>
       </div>
       <div className="card-grid">
         {sampleTrips.map((trip) => (
           <Link className="trip-card" key={trip.id} to={`/trips/${trip.id}`}>
-            <span>{trip.dates}</span>
-            <strong>{trip.name}</strong>
-            <p>Open day-by-day planning, places, bookings, and notes.</p>
+            <span>{t(trip.datesKey)}</span>
+            <strong>{t(trip.nameKey)}</strong>
+            <p>{t("trips.cardDescription")}</p>
           </Link>
         ))}
       </div>

@@ -6,12 +6,15 @@ There is no backend, server-side rendering, authentication service, external dat
 
 Trip data is intended to be local-first in the browser with IndexedDB via Dexie. Browser storage persistence can reduce cleanup risk, but it is not a replacement for JSON backup import/export.
 
+The interface language defaults to Russian with English as a fallback. The selected interface language is stored locally in `localStorage` and does not change trip data. Trip data remains local-first browser data and should be stored in IndexedDB.
+
 ## Stack
 
 - Vite
 - React
 - TypeScript
 - React Router
+- i18next and react-i18next
 - PWA service worker and web app manifest
 - IndexedDB via Dexie
 - Zod for runtime validation of imported backup data
