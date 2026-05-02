@@ -18,8 +18,10 @@ export const en = {
     home: "Home",
     today: "Today",
     trips: "Trips",
+    places: "Places",
     settings: "Settings",
     primaryLabel: "Primary navigation",
+    mobileLabel: "Mobile navigation",
     homeAria: "TripForge home"
   },
   home: {
@@ -84,6 +86,9 @@ export const en = {
     confirmDeleteDay:
       "Delete this itinerary day? Linked places, bookings, and notes will also be deleted.",
     confirmDeletePlace: "Delete this place?",
+    confirmDeleteExpense: "Delete this expense?",
+    confirmDeleteBooking: "Delete this booking?",
+    confirmDeleteDocument: "Delete this document?",
     confirmDeleteChecklistItem: "Delete this checklist item?",
     collapseDay: "Collapse",
     collapseAllDays: "Collapse all",
@@ -164,6 +169,12 @@ export const en = {
       title: "Title",
       notes: "Notes",
       submit: "Add document"
+    },
+    quickSearch: {
+      label: "Quick search",
+      placeholder: "Search places, bookings, documents",
+      resultSummary:
+        "{{places}} places, {{bookings}} bookings, {{documents}} documents"
     }
   },
   tripPlaces: {

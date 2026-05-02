@@ -16,6 +16,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  font-size: 16px;
 }
 
 a {
@@ -30,6 +31,11 @@ a {
 
 button {
   font: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
 }
 
 .app-shell {
@@ -81,6 +87,10 @@ button {
   width: min(1120px, 100%);
   margin: 0 auto;
   padding: clamp(1.25rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+}
+
+.bottom-nav {
+  display: none;
 }
 
 .hero-section {
@@ -137,7 +147,7 @@ button {
 .primary-action,
 .secondary-action,
 .settings-list button {
-  min-height: 2.75rem;
+  min-height: 3rem;
   border: 1px solid transparent;
   border-radius: 0.7rem;
   padding: 0.75rem 1rem;
@@ -159,7 +169,8 @@ button {
 .status-panel,
 .trip-card,
 .focus-card,
-.timeline-list article {
+.timeline-list article,
+.empty-state {
   border: 1px solid #dbe7e3;
   border-radius: 0.5rem;
   background: #ffffff;
@@ -214,10 +225,22 @@ button {
 
 .trip-card,
 .focus-card,
-.timeline-list article {
+.timeline-list article,
+.empty-state {
   display: grid;
   gap: 0.55rem;
   padding: 1rem;
+}
+
+.empty-state {
+  box-shadow: none;
+}
+
+.empty-state p,
+.empty-state div {
+  margin: 0;
+  color: #52635f;
+  line-height: 1.6;
 }
 
 .settings-list {
@@ -270,9 +293,10 @@ button {
 .compact-form input,
 .compact-form select,
 .places-filter-panel input,
-.places-filter-panel select {
+.places-filter-panel select,
+.quick-search-panel input {
   width: 100%;
-  min-height: 2.75rem;
+  min-height: 3rem;
   border: 1px solid #c7d8d2;
   border-radius: 0.5rem;
   color: #172026;
@@ -337,6 +361,28 @@ button {
   gap: 0.45rem;
 }
 
+.field,
+.quick-search-panel label {
+  display: grid;
+  gap: 0.35rem;
+  color: #52635f;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.quick-search-panel {
+  position: sticky;
+  top: 4.5rem;
+  z-index: 8;
+  display: grid;
+  gap: 0.5rem;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.75rem;
+  backdrop-filter: blur(10px);
+}
+
 .map-panel {
   overflow: hidden;
   min-height: 16rem;
@@ -387,7 +433,7 @@ button {
 
 .danger-action {
   justify-self: start;
-  min-height: 2.35rem;
+  min-height: 3rem;
   border: 1px solid #f0b8b8;
   border-radius: 0.5rem;
   background: #fff7f7;
@@ -509,7 +555,7 @@ button {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.65rem;
-  min-height: 2.75rem;
+  min-height: 3rem;
   border: 1px solid #dbe7e3;
   border-radius: 0.5rem;
   background: #ffffff;
@@ -548,7 +594,7 @@ button {
 }
 
 .language-option {
-  min-height: 2.6rem;
+  min-height: 3rem;
   border: 1px solid #c7d8d2;
   border-radius: 0.7rem;
   background: #ffffff;
@@ -610,7 +656,7 @@ button {
 
 .storage-action {
   justify-self: start;
-  min-height: 2.75rem;
+  min-height: 3rem;
   border: 0;
   border-radius: 0.7rem;
   background: #0f766e;
@@ -636,15 +682,67 @@ button {
   line-height: 1.6;
 }
 
+.loading-state {
+  margin: 0;
+  color: #52635f;
+  font-weight: 750;
+  line-height: 1.6;
+}
+
+.day-sticky-header {
+  position: sticky;
+  top: 4.5rem;
+  z-index: 7;
+  margin: -0.25rem -0.5rem 0;
+  border: 1px solid #dbe7e3;
+  border-radius: 0.5rem;
+  background: rgba(247, 250, 249, 0.96);
+  padding: 0.75rem 0.5rem;
+  backdrop-filter: blur(10px);
+}
+
 @media (max-width: 720px) {
+  body {
+    padding-bottom: 4.75rem;
+  }
+
   .top-bar {
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
   }
 
   .main-nav {
-    width: 100%;
-    padding-bottom: 0.15rem;
+    display: none;
+  }
+
+  .bottom-nav {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.25rem;
+    border-top: 1px solid #dbe7e3;
+    background: rgba(255, 255, 255, 0.97);
+    padding: 0.45rem 0.65rem calc(0.45rem + env(safe-area-inset-bottom));
+    backdrop-filter: blur(12px);
+  }
+
+  .bottom-nav-link {
+    display: grid;
+    min-height: 3.2rem;
+    place-items: center;
+    border-radius: 0.7rem;
+    color: #52635f;
+    font-size: 0.82rem;
+    font-weight: 800;
+  }
+
+  .bottom-nav-link-active {
+    background: #d9f4ed;
+    color: #0d5f58;
   }
 
   .hero-section {
@@ -653,5 +751,25 @@ button {
 
   .status-panel {
     min-height: auto;
+  }
+
+  .page-frame {
+    padding-bottom: 1.25rem;
+  }
+
+  .section-title-row,
+  .item-heading-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .place-card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .quick-search-panel,
+  .day-sticky-header {
+    top: 4rem;
   }
 }

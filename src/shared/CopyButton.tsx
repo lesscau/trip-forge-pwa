@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Button } from "./Button";
 
 type CopyButtonProps = {
   text?: string;
@@ -27,14 +28,14 @@ export function CopyButton({ children, text }: CopyButtonProps) {
 
   return (
     <span className="copy-action">
-      <button
-        className="secondary-action"
+      <Button
+        aria-label={typeof children === "string" ? children : undefined}
         disabled={!value}
         onClick={() => void handleCopy()}
         type="button"
       >
         {children}
-      </button>
+      </Button>
       {status ? (
         <span className={status === "copied" ? "copy-status" : "copy-error"}>
           {t(status === "copied" ? "copy.copied" : "copy.error")}

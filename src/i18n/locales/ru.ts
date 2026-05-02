@@ -18,8 +18,10 @@ export const ru = {
     home: "Главная",
     today: "Сегодня",
     trips: "Поездки",
+    places: "Места",
     settings: "Настройки",
     primaryLabel: "Основная навигация",
+    mobileLabel: "Мобильная навигация",
     homeAria: "На главную TripForge"
   },
   home: {
@@ -84,6 +86,9 @@ export const ru = {
     confirmDeleteDay:
       "Удалить день маршрута? Связанные места, бронирования и заметки тоже будут удалены.",
     confirmDeletePlace: "Удалить место?",
+    confirmDeleteExpense: "Удалить расход?",
+    confirmDeleteBooking: "Удалить бронь?",
+    confirmDeleteDocument: "Удалить документ?",
     confirmDeleteChecklistItem: "Удалить пункт чеклиста?",
     collapseDay: "Свернуть",
     collapseAllDays: "Свернуть все",
@@ -164,6 +169,12 @@ export const ru = {
       title: "Название",
       notes: "Заметки",
       submit: "Добавить документ"
+    },
+    quickSearch: {
+      label: "Быстрый поиск",
+      placeholder: "Искать места, брони, документы",
+      resultSummary:
+        "{{places}} мест, {{bookings}} броней, {{documents}} документов"
     }
   },
   tripPlaces: {

@@ -1,6 +1,9 @@
 import { NavLink, Route, Routes } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
 
+import type { Trip } from "../db/database";
+import { listTrips } from "../db/repositories";
 import { HomePage } from "./pages/HomePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { TodayPage } from "./pages/TodayPage";
@@ -17,6 +20,39 @@ const navItems = [
 
 export function App() {
   const { t } = useTranslation();
+  const [placesTrip, setPlacesTrip] = useState<Trip>();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    listTrips()
+      .then((trips) => {
+        if (isMounted) {
+          setPlacesTrip([...trips].sort((left, right) =>
+            right.startDate.localeCompare(left.startDate)
+          )[0]);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setPlacesTrip(undefined);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const mobileNavItems = [
+    { to: "/today", labelKey: "nav.today" },
+    { to: "/trips", labelKey: "nav.trips" },
+    {
+      to: placesTrip ? `/trips/${placesTrip.id}/places` : "/trips",
+      labelKey: "nav.places"
+    },
+    { to: "/settings", labelKey: "nav.settings" }
+  ];
 
   return (
     <div className="app-shell">
@@ -50,6 +86,19 @@ export function App() {
           <Route path="/settings" element={<SettingsPage />} />
         </Routes>
       </main>
+      <nav className="bottom-nav" aria-label={t("nav.mobileLabel")}>
+        {mobileNavItems.map((item) => (
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "bottom-nav-link bottom-nav-link-active" : "bottom-nav-link"
+            }
+            key={`${item.to}-${item.labelKey}`}
+            to={item.to}
+          >
+            {t(item.labelKey)}
+          </NavLink>
+        ))}
+      </nav>
     </div>
   );
 }

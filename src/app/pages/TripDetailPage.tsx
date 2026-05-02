@@ -1,7 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
+import type { Booking, Place, TravelDocument } from "../../db/database";
 import { exportTripJsonPayload } from "../../db/repositories";
 import { createTripExportFilename } from "../../export/tripJson";
 import { BookingsSection } from "../../features/trip-detail/BookingsSection";
@@ -17,6 +18,41 @@ export function TripDetailPage() {
   const { t } = useTranslation();
   const tripDetail = useTripDetailData(tripId);
   const [exportError, setExportError] = useState<string>();
+  const [quickSearch, setQuickSearch] = useState("");
+
+  const normalizedQuickSearch = quickSearch.trim().toLocaleLowerCase();
+  const filteredDaysWithPlaces = useMemo(
+    () =>
+      normalizedQuickSearch
+        ? tripDetail.daysWithPlaces
+            .map((dayWithPlaces) => ({
+              ...dayWithPlaces,
+              places: dayWithPlaces.places.filter((place) =>
+                matchesPlaceSearch(place, normalizedQuickSearch)
+              )
+            }))
+            .filter(({ places }) => places.length > 0)
+        : tripDetail.daysWithPlaces,
+    [normalizedQuickSearch, tripDetail.daysWithPlaces]
+  );
+  const filteredBookings = useMemo(
+    () =>
+      normalizedQuickSearch
+        ? tripDetail.bookings.filter((booking) =>
+            matchesBookingSearch(booking, normalizedQuickSearch)
+          )
+        : tripDetail.bookings,
+    [normalizedQuickSearch, tripDetail.bookings]
+  );
+  const filteredDocuments = useMemo(
+    () =>
+      normalizedQuickSearch
+        ? tripDetail.documents.filter((document) =>
+            matchesDocumentSearch(document, normalizedQuickSearch)
+          )
+        : tripDetail.documents,
+    [normalizedQuickSearch, tripDetail.documents]
+  );
 
   const handleExportTripJson = async () => {
     if (!tripDetail.trip) {
@@ -73,6 +109,29 @@ export function TripDetailPage() {
   return (
     <section className="content-section">
       <TripHeader trip={tripDetail.trip} />
+      <section className="quick-search-panel" aria-label={t("tripDetail.quickSearch.label")}>
+        <label>
+          <span>{t("tripDetail.quickSearch.label")}</span>
+          <input
+            onChange={(event) => setQuickSearch(event.target.value)}
+            placeholder={t("tripDetail.quickSearch.placeholder")}
+            type="search"
+            value={quickSearch}
+          />
+        </label>
+        {normalizedQuickSearch ? (
+          <p className="muted-text">
+            {t("tripDetail.quickSearch.resultSummary", {
+              places: filteredDaysWithPlaces.reduce(
+                (count, day) => count + day.places.length,
+                0
+              ),
+              bookings: filteredBookings.length,
+              documents: filteredDocuments.length
+            })}
+          </p>
+        ) : null}
+      </section>
       <div className="button-row">
         <button
           className="secondary-action"
@@ -87,7 +146,7 @@ export function TripDetailPage() {
         collapsedDayIds={tripDetail.collapsedDayIds}
         dayForm={tripDetail.dayForm}
         dayFormError={tripDetail.dayFormError}
-        daysWithPlaces={tripDetail.daysWithPlaces}
+        daysWithPlaces={filteredDaysWithPlaces}
         editPlaceForms={tripDetail.editPlaceForms}
         editingPlaceId={tripDetail.editingPlaceId}
         insertDayForms={tripDetail.insertDayForms}
@@ -128,7 +187,7 @@ export function TripDetailPage() {
       />
       <BookingsSection
         bookingForm={tripDetail.bookingForm}
-        bookings={tripDetail.bookings}
+        bookings={filteredBookings}
         editBookingForms={tripDetail.editBookingForms}
         editingBookingId={tripDetail.editingBookingId}
         onAddBooking={tripDetail.handleAddBooking}
@@ -143,7 +202,7 @@ export function TripDetailPage() {
       />
       <DocumentsSection
         documentForm={tripDetail.documentForm}
-        documents={tripDetail.documents}
+        documents={filteredDocuments}
         onAddDocument={tripDetail.handleAddDocument}
         onDeleteDocument={tripDetail.handleDeleteDocument}
         onDocumentFormChange={(patch) =>
@@ -161,5 +220,41 @@ export function TripDetailPage() {
         onToggleChecklistItem={tripDetail.handleToggleChecklistItem}
       />
     </section>
+  );
+}
+
+function includesSearch(value: string | undefined, search: string): boolean {
+  return value?.toLocaleLowerCase().includes(search) ?? false;
+}
+
+function matchesPlaceSearch(place: Place, search: string): boolean {
+  return [
+    place.name,
+    place.nameZh,
+    place.address,
+    place.addressZh,
+    place.city,
+    place.notes,
+    place.category
+  ].some((value) => includesSearch(value, search));
+}
+
+function matchesBookingSearch(booking: Booking, search: string): boolean {
+  return [
+    booking.title,
+    booking.confirmationCode,
+    booking.address,
+    booking.addressZh,
+    booking.notes,
+    booking.type
+  ].some((value) => includesSearch(value, search));
+}
+
+function matchesDocumentSearch(
+  document: TravelDocument,
+  search: string
+): boolean {
+  return [document.title, document.type, document.notes].some((value) =>
+    includesSearch(value, search)
   );
 }

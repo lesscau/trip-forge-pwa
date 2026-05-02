@@ -498,6 +498,10 @@ export function useTripDetailData(tripId?: string) {
   };
 
   const handleDeleteExpense = async (expenseId: string) => {
+    if (!window.confirm(t("tripDetail.confirmDeleteExpense"))) {
+      return;
+    }
+
     await deleteExpense(expenseId);
     await loadTrip();
   };
@@ -587,6 +591,10 @@ export function useTripDetailData(tripId?: string) {
   };
 
   const handleDeleteBooking = async (bookingId: string) => {
+    if (!window.confirm(t("tripDetail.confirmDeleteBooking"))) {
+      return;
+    }
+
     await deleteBooking(bookingId);
     await loadTrip();
   };
@@ -671,6 +679,10 @@ export function useTripDetailData(tripId?: string) {
   };
 
   const handleDeleteDocument = async (documentId: string) => {
+    if (!window.confirm(t("tripDetail.confirmDeleteDocument"))) {
+      return;
+    }
+
     await deleteDocument(documentId);
     await loadTrip();
   };

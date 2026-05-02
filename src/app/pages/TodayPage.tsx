@@ -17,6 +17,8 @@ import {
   listTrips
 } from "../../db/repositories";
 import { formatDate } from "../../shared/format";
+import { CopyButton } from "../../shared/CopyButton";
+import { EmptyState } from "../../shared/EmptyState";
 import {
   selectTodayTrip,
   toLocalDateKey,
@@ -79,7 +81,7 @@ export function TodayPage() {
   }, [loadToday]);
 
   if (isLoading) {
-    return <p className="muted-text">{t("common.loading")}</p>;
+    return <p className="loading-state">{t("common.loading")}</p>;
   }
 
   if (errorMessage) {
@@ -88,20 +90,18 @@ export function TodayPage() {
 
   return (
     <section className="content-section">
-      <div className="section-heading">
+      <div className="section-heading day-sticky-header">
         <p className="eyebrow">{t("today.eyebrow")}</p>
         <h1>{t("today.title")}</h1>
       </div>
 
       {selection.status === "none" ? (
-        <article className="focus-card">
-          <span>{t("today.emptyEyebrow")}</span>
-          <strong>{t("today.emptyTitle")}</strong>
+        <EmptyState title={t("today.emptyTitle")}>
           <p>{t("today.emptyDescription")}</p>
           <Link className="secondary-action" to="/trips">
             {t("today.openTrips")}
           </Link>
-        </article>
+        </EmptyState>
       ) : (
         <>
           <article className="focus-card">
@@ -119,7 +119,7 @@ export function TodayPage() {
           <section className="data-section">
             <h2>{t("tripDetail.sections.places")}</h2>
             {selection.places.length === 0 ? (
-              <p className="muted-text">{t("today.emptyPlaces")}</p>
+              <EmptyState>{t("today.emptyPlaces")}</EmptyState>
             ) : (
               <div className="card-grid">
                 {selection.places.map((place) => (
@@ -137,7 +137,7 @@ export function TodayPage() {
           <section className="data-section">
             <h2>{t("tripDetail.sections.bookings")}</h2>
             {selection.bookings.length === 0 ? (
-              <p className="muted-text">{t("today.emptyBookings")}</p>
+              <EmptyState>{t("today.emptyBookings")}</EmptyState>
             ) : (
               <div className="card-grid">
                 {selection.bookings.map((booking) => (
@@ -150,6 +150,9 @@ export function TodayPage() {
                         {booking.confirmationCode}
                       </p>
                     ) : null}
+                    <CopyButton text={booking.confirmationCode}>
+                      {t("tripDetail.bookingActions.copyConfirmationCode")}
+                    </CopyButton>
                   </article>
                 ))}
               </div>
@@ -159,7 +162,7 @@ export function TodayPage() {
           <section className="data-section">
             <h2>{t("tripDetail.sections.checklist")}</h2>
             {selection.checklistItems.length === 0 ? (
-              <p className="muted-text">{t("today.emptyChecklist")}</p>
+              <EmptyState>{t("today.emptyChecklist")}</EmptyState>
             ) : (
               <div className="checklist-list">
                 {selection.checklistItems.map((item) => (
