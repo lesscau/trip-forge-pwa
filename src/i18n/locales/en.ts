@@ -77,6 +77,10 @@ export const en = {
     emptyPlaces: "No places in this trip yet.",
     emptyBookings: "No bookings in this trip yet.",
     emptyChecklist: "No checklist items yet.",
+    confirmDeleteDay:
+      "Delete this itinerary day? Linked places, bookings, and notes will also be deleted.",
+    confirmDeletePlace: "Delete this place?",
+    confirmDeleteChecklistItem: "Delete this checklist item?",
     confirmationCode: "Confirmation code",
     startsAt: "Starts",
     endsAt: "Ends",
@@ -90,6 +94,7 @@ export const en = {
       date: "Date",
       city: "City",
       summary: "Summary",
+      dateOutOfRange: "The day date must be inside the trip date range.",
       submit: "Add day"
     },
     placeForm: {

@@ -59,7 +59,10 @@ export function selectTodayTrip(input: TodaySelectionInput): TodaySelection {
     .sort(byDayDate);
   const exactDay = tripDays.find((day) => day.date === input.today);
   const nearestFutureDay = tripDays.find((day) => day.date > input.today);
-  const selectedDay = exactDay ?? nearestFutureDay;
+  const latestPastDay = [...tripDays]
+    .reverse()
+    .find((day) => day.date < input.today);
+  const selectedDay = exactDay ?? nearestFutureDay ?? latestPastDay;
 
   if (!selectedDay) {
     return { status: "none" };

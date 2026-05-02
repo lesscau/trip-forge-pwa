@@ -77,6 +77,10 @@ export const ru = {
     emptyPlaces: "В поездке пока нет мест.",
     emptyBookings: "В поездке пока нет бронирований.",
     emptyChecklist: "В чеклисте пока нет пунктов.",
+    confirmDeleteDay:
+      "Удалить день маршрута? Связанные места, бронирования и заметки тоже будут удалены.",
+    confirmDeletePlace: "Удалить место?",
+    confirmDeleteChecklistItem: "Удалить пункт чеклиста?",
     confirmationCode: "Код подтверждения",
     startsAt: "Начало",
     endsAt: "Окончание",
@@ -90,6 +94,7 @@ export const ru = {
       date: "Дата",
       city: "Город",
       summary: "Краткое описание",
+      dateOutOfRange: "Дата дня должна быть внутри диапазона поездки.",
       submit: "Добавить день"
     },
     placeForm: {

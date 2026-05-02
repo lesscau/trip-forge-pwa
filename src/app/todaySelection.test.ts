@@ -98,6 +98,23 @@ describe("today selection", () => {
     });
   });
 
+  it("selects the latest past day when active trip has no future planned days", () => {
+    const selection = selectTodayTrip({
+      trips: [trip],
+      days,
+      places,
+      bookings,
+      checklistItems,
+      today: "2026-05-08"
+    });
+
+    expect(selection).toMatchObject({
+      status: "active",
+      day: { id: "day-2" },
+      isExactDay: false
+    });
+  });
+
   it("returns none when there is no active trip", () => {
     expect(
       selectTodayTrip({
