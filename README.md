@@ -44,6 +44,30 @@ npm run test
 npm run build
 ```
 
+## Deploy to GitHub Pages
+
+The repository includes a GitHub Actions workflow at `.github/workflows/pages.yml`.
+
+On every push to `main`, it runs:
+
+```bash
+npm ci
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+Then it deploys the generated `dist/` directory to GitHub Pages.
+
+In GitHub, enable Pages with:
+
+1. Open repository settings.
+2. Go to Pages.
+3. Set Source to GitHub Actions.
+
+For project pages, the workflow builds with `VITE_BASE_PATH` set to the repository name path, such as `/trip-forge-pwa/`. Local builds keep the default `/` base path.
+
 ## Project Structure
 
 ```text
