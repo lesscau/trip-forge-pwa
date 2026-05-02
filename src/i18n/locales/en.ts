@@ -199,6 +199,22 @@ export const en = {
       noCoordinates: "No places with coordinates yet."
     }
   },
+  tripBackup: {
+    exportButton: "Export trip JSON",
+    exportError: "Unable to export trip JSON",
+    importEyebrow: "Offline backup",
+    importButton: "Import trip JSON",
+    importFile: "Backup JSON file",
+    importError: "Unable to import trip JSON",
+    invalidJson: "The selected file is not valid JSON.",
+    invalidBackup: "The selected file is not a valid TripForge trip backup.",
+    unsupportedSchemaVersion: "This TripForge backup schema version is not supported.",
+    previewTitle: "Import preview",
+    previewDays: "Days",
+    previewPlaces: "Places",
+    previewExpenses: "Expenses",
+    confirmImport: "Import as new trip"
+  },
   copy: {
     copied: "Copied",
     error: "Could not copy"

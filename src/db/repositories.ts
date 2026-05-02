@@ -9,6 +9,11 @@ import type {
   Trip,
   TripDay
 } from "./database";
+import {
+  buildTripExportPayload,
+  remapTripExportPayload,
+  type TripExportPayload
+} from "../export/tripJson";
 
 export type CreateTripInput = Pick<
   Trip,
@@ -208,4 +213,79 @@ export async function upsertChecklistItem(
 
 export async function deleteChecklistItem(id: string): Promise<void> {
   await db.checklistItems.delete(id);
+}
+
+export async function exportTripJsonPayload(
+  tripId: string
+): Promise<TripExportPayload | undefined> {
+  const trip = await getTrip(tripId);
+
+  if (!trip) {
+    return undefined;
+  }
+
+  const [
+    days,
+    places,
+    expenses,
+    bookings,
+    documents,
+    notes,
+    checklistItems
+  ] = await Promise.all([
+    listDaysByTrip(tripId),
+    listPlacesByTrip(tripId),
+    listExpensesByTrip(tripId),
+    listBookingsByTrip(tripId),
+    listDocumentsByTrip(tripId),
+    listNotesByTrip(tripId),
+    listChecklistItemsByTrip(tripId)
+  ]);
+
+  return buildTripExportPayload({
+    trip,
+    days,
+    places,
+    expenses,
+    bookings,
+    documents,
+    notes,
+    checklistItems
+  });
+}
+
+export async function importTripJsonPayload(
+  payload: TripExportPayload
+): Promise<Trip> {
+  const remappedData = remapTripExportPayload(
+    payload,
+    createId,
+    nowIso()
+  );
+
+  await db.transaction(
+    "rw",
+    [
+      db.trips,
+      db.tripDays,
+      db.places,
+      db.expenses,
+      db.bookings,
+      db.travelDocuments,
+      db.notes,
+      db.checklistItems
+    ],
+    async () => {
+      await db.trips.add(remappedData.trip);
+      await db.tripDays.bulkAdd(remappedData.days);
+      await db.places.bulkAdd(remappedData.places);
+      await db.expenses.bulkAdd(remappedData.expenses);
+      await db.bookings.bulkAdd(remappedData.bookings);
+      await db.travelDocuments.bulkAdd(remappedData.documents);
+      await db.notes.bulkAdd(remappedData.notes);
+      await db.checklistItems.bulkAdd(remappedData.checklistItems);
+    }
+  );
+
+  return remappedData.trip;
 }

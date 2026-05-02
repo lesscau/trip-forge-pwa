@@ -52,6 +52,27 @@ npm run test
 npm run build
 ```
 
+## Backup and Restore
+
+TripForge is local-first: trip data lives in IndexedDB on the current device and is not synced to a backend or cloud account. Export JSON backups regularly, especially before travel, browser cleanup, device changes, or reinstalling the PWA.
+
+To back up one trip:
+
+1. Open the trip detail page.
+2. Select `Export trip JSON`.
+3. Store the downloaded `tripforge-{trip-title}-{date}.json` file somewhere you control.
+
+The exported file includes the trip, days, places, expenses, bookings, document metadata, notes, and checklist items. It does not upload files or store a copy outside your device automatically.
+
+To restore a trip:
+
+1. Open `/trips`.
+2. Select `Import trip JSON`.
+3. Review the preview with title, dates, and item counts.
+4. Confirm the import.
+
+Imported trips are created as new trips with new internal ids, so they do not overwrite existing local data.
+
 ## Deploy to GitHub Pages
 
 The repository includes a GitHub Actions workflow at `.github/workflows/pages.yml`.
@@ -113,7 +134,7 @@ TripForge stores application data locally in IndexedDB through Dexie. The data l
 
 Core screens are connected to local IndexedDB data:
 
-- `/trips` lists stored trips, creates a simple trip, and can seed a demo China trip.
+- `/trips` lists stored trips, creates a simple trip, imports a TripForge trip JSON backup as a new trip, and can seed a demo China trip.
 - `/trips/:tripId` loads and edits trip details, itinerary days, places, expenses, bookings, documents, and checklist items. It supports adding and deleting days, adding and deleting places, adding and editing expenses with totals by currency and category, adding and editing bookings with copy actions for confirmation codes and Chinese addresses, storing travel document metadata, and adding, grouping, toggling, and deleting checklist items.
 - `/trips/:tripId/places` shows all places for a trip with an OpenStreetMap overview map, search, city, category, day filters, filter reset, city/category/no grouping modes, inline place editing, copy actions, and Amap search links. The embedded map uses stored `lat`/`lng` coordinates, shows markers without an API key, and draws a day route line only when a day filter has at least two mapped places.
 - `/today` selects the active trip for the current date and shows the exact day, nearest future day, or latest past planned day.

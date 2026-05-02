@@ -201,6 +201,22 @@ export const ru = {
       noCoordinates: "Пока нет мест с координатами."
     }
   },
+  tripBackup: {
+    exportButton: "Экспорт JSON поездки",
+    exportError: "Не удалось экспортировать JSON поездки",
+    importEyebrow: "Offline backup",
+    importButton: "Импорт JSON поездки",
+    importFile: "Файл backup JSON",
+    importError: "Не удалось импортировать JSON поездки",
+    invalidJson: "Выбранный файл не является корректным JSON.",
+    invalidBackup: "Выбранный файл не является backup-файлом TripForge.",
+    unsupportedSchemaVersion: "Эта версия схемы backup TripForge не поддерживается.",
+    previewTitle: "Предпросмотр импорта",
+    previewDays: "Дни",
+    previewPlaces: "Места",
+    previewExpenses: "Расходы",
+    confirmImport: "Импортировать как новую поездку"
+  },
   copy: {
     copied: "Скопировано",
     error: "Не удалось скопировать"

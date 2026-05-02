@@ -1,10 +1,26 @@
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type FormEvent
+} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { createDemoChinaTrip } from "../../db/demoSeed";
-import { createTrip, listTrips } from "../../db/repositories";
+import {
+  createTrip,
+  importTripJsonPayload,
+  listTrips
+} from "../../db/repositories";
 import type { Trip } from "../../db/database";
+import {
+  getTripImportPreview,
+  parseTripExportJson,
+  type TripExportPayload,
+  type TripImportPreview
+} from "../../export/tripJson";
 import { isValidDateRange } from "../../shared/dateValidation";
 import { formatTripDateRange } from "../../shared/format";
 
@@ -14,6 +30,9 @@ export function TripsPage() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [importErrorMessage, setImportErrorMessage] = useState<string>();
+  const [importPayload, setImportPayload] = useState<TripExportPayload>();
+  const [importPreview, setImportPreview] = useState<TripImportPreview>();
   const [formData, setFormData] = useState({
     title: "",
     destinationCountry: "",
@@ -69,6 +88,52 @@ export function TripsPage() {
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : t("trips.createTripError")
+      );
+    }
+  };
+
+  const handleImportFileChange = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    setImportErrorMessage(undefined);
+    setImportPayload(undefined);
+    setImportPreview(undefined);
+
+    if (!file) {
+      return;
+    }
+
+    try {
+      const payload = parseTripExportJson(await file.text());
+      setImportPayload(payload);
+      setImportPreview(getTripImportPreview(payload));
+    } catch (error) {
+      setImportErrorMessage(
+        getTripImportErrorMessage(error, t)
+      );
+    } finally {
+      event.target.value = "";
+    }
+  };
+
+  const handleConfirmImport = async () => {
+    if (!importPayload) {
+      return;
+    }
+
+    setImportErrorMessage(undefined);
+
+    try {
+      const importedTrip = await importTripJsonPayload(importPayload);
+      setImportPayload(undefined);
+      setImportPreview(undefined);
+      await loadTrips();
+      void navigate(`/trips/${importedTrip.id}`);
+    } catch (error) {
+      setImportErrorMessage(
+        getTripImportErrorMessage(error, t)
       );
     }
   };
@@ -160,6 +225,69 @@ export function TripsPage() {
           {t("trips.createDemo")}
         </button>
       </div>
+      <section className="form-panel">
+        <div>
+          <p className="eyebrow">{t("tripBackup.importEyebrow")}</p>
+          <h2>{t("tripBackup.importButton")}</h2>
+        </div>
+        <label>
+          <span>{t("tripBackup.importFile")}</span>
+          <input
+            accept="application/json,.json"
+            onChange={(event) => void handleImportFileChange(event)}
+            type="file"
+          />
+        </label>
+        {importErrorMessage ? (
+          <p className="status-message">{importErrorMessage}</p>
+        ) : null}
+        {importPreview ? (
+          <article className="focus-card">
+            <span>{t("tripBackup.previewTitle")}</span>
+            <strong>{importPreview.title}</strong>
+            <p>
+              {formatTripDateRange(
+                importPreview.startDate,
+                importPreview.endDate,
+                i18n.language
+              )}
+            </p>
+            <dl className="storage-details">
+              <div>
+                <dt>{t("tripBackup.previewDays")}</dt>
+                <dd>{importPreview.dayCount}</dd>
+              </div>
+              <div>
+                <dt>{t("tripBackup.previewPlaces")}</dt>
+                <dd>{importPreview.placeCount}</dd>
+              </div>
+              <div>
+                <dt>{t("tripBackup.previewExpenses")}</dt>
+                <dd>{importPreview.expenseCount}</dd>
+              </div>
+            </dl>
+            <div className="button-row">
+              <button
+                className="primary-action"
+                onClick={() => void handleConfirmImport()}
+                type="button"
+              >
+                {t("tripBackup.confirmImport")}
+              </button>
+              <button
+                className="secondary-action"
+                onClick={() => {
+                  setImportPayload(undefined);
+                  setImportPreview(undefined);
+                }}
+                type="button"
+              >
+                {t("common.cancel")}
+              </button>
+            </div>
+          </article>
+        ) : null}
+      </section>
       {errorMessage ? <p className="status-message">{errorMessage}</p> : null}
       {isLoading ? <p className="muted-text">{t("trips.loading")}</p> : null}
       {!isLoading && trips.length === 0 ? (
@@ -178,4 +306,27 @@ export function TripsPage() {
       </div>
     </section>
   );
+}
+
+function getTripImportErrorMessage(
+  error: unknown,
+  t: ReturnType<typeof useTranslation>["t"]
+): string {
+  if (!(error instanceof Error)) {
+    return t("tripBackup.importError");
+  }
+
+  if (error.message === "Invalid JSON file.") {
+    return t("tripBackup.invalidJson");
+  }
+
+  if (error.message === "Unsupported TripForge backup schema version.") {
+    return t("tripBackup.unsupportedSchemaVersion");
+  }
+
+  if (error.message === "This file is not a valid TripForge trip backup.") {
+    return t("tripBackup.invalidBackup");
+  }
+
+  return error.message;
 }

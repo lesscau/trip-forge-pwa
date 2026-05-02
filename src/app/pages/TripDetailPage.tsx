@@ -1,6 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
+import { exportTripJsonPayload } from "../../db/repositories";
+import { createTripExportFilename } from "../../export/tripJson";
 import { BookingsSection } from "../../features/trip-detail/BookingsSection";
 import { ChecklistSection } from "../../features/trip-detail/ChecklistSection";
 import { DocumentsSection } from "../../features/trip-detail/DocumentsSection";
@@ -13,6 +16,39 @@ export function TripDetailPage() {
   const { tripId } = useParams();
   const { t } = useTranslation();
   const tripDetail = useTripDetailData(tripId);
+  const [exportError, setExportError] = useState<string>();
+
+  const handleExportTripJson = async () => {
+    if (!tripDetail.trip) {
+      return;
+    }
+
+    setExportError(undefined);
+
+    try {
+      const payload = await exportTripJsonPayload(tripDetail.trip.id);
+
+      if (!payload) {
+        setExportError(t("tripBackup.exportError"));
+        return;
+      }
+
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = createTripExportFilename(tripDetail.trip.title);
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setExportError(
+        error instanceof Error ? error.message : t("tripBackup.exportError")
+      );
+    }
+  };
 
   if (tripDetail.isLoading) {
     return <p className="muted-text">{t("common.loading")}</p>;
@@ -37,6 +73,16 @@ export function TripDetailPage() {
   return (
     <section className="content-section">
       <TripHeader trip={tripDetail.trip} />
+      <div className="button-row">
+        <button
+          className="secondary-action"
+          onClick={() => void handleExportTripJson()}
+          type="button"
+        >
+          {t("tripBackup.exportButton")}
+        </button>
+      </div>
+      {exportError ? <p className="status-message">{exportError}</p> : null}
       <ItinerarySection
         collapsedDayIds={tripDetail.collapsedDayIds}
         dayForm={tripDetail.dayForm}
