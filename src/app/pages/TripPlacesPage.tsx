@@ -26,6 +26,7 @@ import {
   type PlaceGroupBy
 } from "../../features/places/tripPlaces";
 import { TripHeader } from "../../features/trip-detail/TripHeader";
+import { IconButton } from "../../shared/IconButton";
 
 type TripPlacesState = {
   trip?: Trip;
@@ -606,14 +607,13 @@ function PlaceListCard({
             </p>
           ) : null}
           <PlaceActions place={place} />
-          <div className="button-row">
-            <button
-              className="secondary-action"
+          <div className="icon-button-row">
+            <IconButton
+              icon="edit"
+              label={t("common.edit")}
               onClick={() => onStartEditing(place)}
               type="button"
-            >
-              {t("common.edit")}
-            </button>
+            />
           </div>
         </>
       )}

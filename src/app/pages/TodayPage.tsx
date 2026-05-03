@@ -150,7 +150,7 @@ export function TodayPage() {
                         {booking.confirmationCode}
                       </p>
                     ) : null}
-                    <CopyButton text={booking.confirmationCode}>
+                    <CopyButton icon="ticket" text={booking.confirmationCode}>
                       {t("tripDetail.bookingActions.copyConfirmationCode")}
                     </CopyButton>
                   </article>

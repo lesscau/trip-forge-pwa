@@ -6,6 +6,7 @@ import {
   getPlaceCategoryLabelKey,
   placeCategories
 } from "../places/placeCategories";
+import { IconButton } from "../../shared/IconButton";
 import { PlaceActions } from "../places/PlaceActions";
 import type { PlaceFormValues } from "./types";
 
@@ -139,22 +140,20 @@ export function PlaceCard({
           <div className="item-heading-row">
             <strong>{place.name}</strong>
             <div className="reorder-actions">
-              <button
-                className="secondary-action"
+              <IconButton
                 disabled={!canMoveUp}
+                icon="arrowUp"
+                label={t("common.up")}
                 onClick={() => void onMovePlace(place.id, -1)}
                 type="button"
-              >
-                {t("common.up")}
-              </button>
-              <button
-                className="secondary-action"
+              />
+              <IconButton
                 disabled={!canMoveDown}
+                icon="arrowDown"
+                label={t("common.down")}
                 onClick={() => void onMovePlace(place.id, 1)}
                 type="button"
-              >
-                {t("common.down")}
-              </button>
+              />
             </div>
           </div>
           <span>{t(getPlaceCategoryLabelKey(place.category ?? "other"))}</span>
@@ -163,21 +162,20 @@ export function PlaceCard({
           {place.address ? <p>{place.address}</p> : null}
           {place.notes ? <p>{place.notes}</p> : null}
           <PlaceActions place={place} />
-          <div className="button-row">
-            <button
-              className="secondary-action"
+          <div className="icon-button-row">
+            <IconButton
+              icon="edit"
+              label={t("common.edit")}
               onClick={() => onStartEditing(place)}
               type="button"
-            >
-              {t("common.edit")}
-            </button>
-            <button
-              className="danger-action"
+            />
+            <IconButton
+              icon="trash"
+              label={t("common.delete")}
               onClick={() => void onDelete(place.id)}
               type="button"
-            >
-              {t("common.delete")}
-            </button>
+              variant="danger"
+            />
           </div>
         </>
       )}

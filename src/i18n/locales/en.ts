@@ -91,6 +91,7 @@ export const en = {
     confirmDeleteDocument: "Delete this document?",
     confirmDeleteChecklistItem: "Delete this checklist item?",
     collapseDay: "Collapse",
+    expandDay: "Expand",
     collapseAllDays: "Collapse all",
     expandAllDays: "Expand all",
     confirmationCode: "Confirmation code",
@@ -227,6 +228,7 @@ export const en = {
     confirmImport: "Import as new trip"
   },
   copy: {
+    copy: "Copy",
     copied: "Copied",
     error: "Could not copy"
   },

@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Place } from "../../db/database";
@@ -14,6 +15,7 @@ import {
   type InsertDayFormValues,
   type PlaceFormValues
 } from "./types";
+import { IconButton } from "../../shared/IconButton";
 
 type DayCardProps = {
   dayWithPlaces: DayWithPlaces;
@@ -79,6 +81,16 @@ export function DayCard({
 }: DayCardProps) {
   const { i18n, t } = useTranslation();
   const { day, places: dayPlaces } = dayWithPlaces;
+  const [isAddPlaceOpen, setIsAddPlaceOpen] = useState(false);
+  const [isInsertDayOpen, setIsInsertDayOpen] = useState(false);
+
+  const handleAddPlace = async (event: FormEvent<HTMLFormElement>) => {
+    await onAddPlace(event, day.id);
+  };
+
+  const handleInsertDayAfter = async (event: FormEvent<HTMLFormElement>) => {
+    await onInsertDayAfter(event, day.id);
+  };
 
   return (
     <article>
@@ -88,31 +100,30 @@ export function DayCard({
           <strong>{day.city}</strong>
         </div>
         <div className="day-heading-actions">
-          <label className="collapse-toggle">
-            <input
-              checked={isCollapsed}
-              onChange={() => onToggleCollapsed(day.id)}
-              type="checkbox"
-            />
-            <span>{t("tripDetail.collapseDay")}</span>
-          </label>
+          <IconButton
+            aria-expanded={!isCollapsed}
+            icon={isCollapsed ? "chevronDown" : "chevronUp"}
+            label={t(
+              isCollapsed ? "tripDetail.expandDay" : "tripDetail.collapseDay"
+            )}
+            onClick={() => onToggleCollapsed(day.id)}
+            type="button"
+          />
           <div className="reorder-actions">
-            <button
-              className="secondary-action"
+            <IconButton
               disabled={!canMoveUp}
+              icon="arrowUp"
+              label={t("common.up")}
               onClick={() => void onMoveDay(day.id, -1)}
               type="button"
-            >
-              {t("common.up")}
-            </button>
-            <button
-              className="secondary-action"
+            />
+            <IconButton
               disabled={!canMoveDown}
+              icon="arrowDown"
+              label={t("common.down")}
               onClick={() => void onMoveDay(day.id, 1)}
               type="button"
-            >
-              {t("common.down")}
-            </button>
+            />
           </div>
         </div>
       </div>
@@ -141,120 +152,147 @@ export function DayCard({
           ) : (
             <p className="muted-text">{t("tripDetail.emptyDayPlaces")}</p>
           )}
-          <form
-            className="compact-form day-place-form"
-            onSubmit={(event) => void onAddPlace(event, day.id)}
-          >
-            <label>
-              <span>{t("tripDetail.placeForm.name")}</span>
-              <input
-                onChange={(event) =>
-                  onPlaceFormChange(day.id, { name: event.target.value })
-                }
-                required
-                type="text"
-                value={placeForm.name}
-              />
-            </label>
-            <label>
-              <span>{t("tripDetail.placeForm.category")}</span>
-              <select
-                onChange={(event) =>
-                  onPlaceFormChange(day.id, {
-                    category: event.target.value as PlaceFormValues["category"]
-                  })
-                }
-                value={placeForm.category}
-              >
-                {placeCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {t(getPlaceCategoryLabelKey(category))}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <span>{t("tripDetail.placeForm.nameZh")}</span>
-              <input
-                onChange={(event) =>
-                  onPlaceFormChange(day.id, { nameZh: event.target.value })
-                }
-                type="text"
-                value={placeForm.nameZh}
-              />
-            </label>
-            <label>
-              <span>{t("tripDetail.placeForm.address")}</span>
-              <input
-                onChange={(event) =>
-                  onPlaceFormChange(day.id, { address: event.target.value })
-                }
-                type="text"
-                value={placeForm.address}
-              />
-            </label>
-            <label>
-              <span>{t("tripDetail.placeForm.addressZh")}</span>
-              <input
-                onChange={(event) =>
-                  onPlaceFormChange(day.id, { addressZh: event.target.value })
-                }
-                type="text"
-                value={placeForm.addressZh}
-              />
-            </label>
-            <label>
-              <span>{t("tripDetail.placeForm.notes")}</span>
-              <input
-                onChange={(event) =>
-                  onPlaceFormChange(day.id, { notes: event.target.value })
-                }
-                type="text"
-                value={placeForm.notes}
-              />
-            </label>
-            <button className="secondary-action" type="submit">
-              {t("tripDetail.placeForm.submit")}
+          <div className="day-card-footer-actions">
+            <button
+              aria-expanded={isAddPlaceOpen}
+              className="secondary-action disclosure-button"
+              onClick={() => setIsAddPlaceOpen((value) => !value)}
+              type="button"
+            >
+              <span>{t("tripDetail.placeForm.submit")}</span>
+              <span aria-hidden="true">{isAddPlaceOpen ? "^" : "v"}</span>
             </button>
-          </form>
-          <form
-            className="compact-form embedded-form"
-            onSubmit={(event) => void onInsertDayAfter(event, day.id)}
-          >
-            <label>
-              <span>{t("tripDetail.insertDayForm.city")}</span>
-              <input
-                onChange={(event) =>
-                  onInsertDayFormChange(day.id, { city: event.target.value })
-                }
-                required
-                type="text"
-                value={insertDayForm.city}
-              />
-            </label>
-            <label>
-              <span>{t("tripDetail.insertDayForm.summary")}</span>
-              <input
-                onChange={(event) =>
-                  onInsertDayFormChange(day.id, {
-                    summary: event.target.value
-                  })
-                }
-                type="text"
-                value={insertDayForm.summary}
-              />
-            </label>
-            <button className="secondary-action" type="submit">
-              {t("tripDetail.insertDayForm.submit")}
+            <button
+              aria-expanded={isInsertDayOpen}
+              className="secondary-action disclosure-button"
+              onClick={() => setIsInsertDayOpen((value) => !value)}
+              type="button"
+            >
+              <span>{t("tripDetail.insertDayForm.submit")}</span>
+              <span aria-hidden="true">{isInsertDayOpen ? "^" : "v"}</span>
             </button>
-          </form>
-          <button
-            className="danger-action"
-            onClick={() => void onDeleteDay(day.id)}
-            type="button"
-          >
-            {t("common.delete")}
-          </button>
+            <IconButton
+              icon="trash"
+              label={t("common.delete")}
+              onClick={() => void onDeleteDay(day.id)}
+              type="button"
+              variant="danger"
+            />
+          </div>
+          {isAddPlaceOpen ? (
+            <form
+              className="compact-form day-place-form"
+              onSubmit={(event) => void handleAddPlace(event)}
+            >
+              <label>
+                <span>{t("tripDetail.placeForm.name")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { name: event.target.value })
+                  }
+                  required
+                  type="text"
+                  value={placeForm.name}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.category")}</span>
+                <select
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, {
+                      category: event.target
+                        .value as PlaceFormValues["category"]
+                    })
+                  }
+                  value={placeForm.category}
+                >
+                  {placeCategories.map((category) => (
+                    <option key={category} value={category}>
+                      {t(getPlaceCategoryLabelKey(category))}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.nameZh")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { nameZh: event.target.value })
+                  }
+                  type="text"
+                  value={placeForm.nameZh}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.address")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { address: event.target.value })
+                  }
+                  type="text"
+                  value={placeForm.address}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.addressZh")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, {
+                      addressZh: event.target.value
+                    })
+                  }
+                  type="text"
+                  value={placeForm.addressZh}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.notes")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { notes: event.target.value })
+                  }
+                  type="text"
+                  value={placeForm.notes}
+                />
+              </label>
+              <button className="secondary-action" type="submit">
+                {t("tripDetail.placeForm.submit")}
+              </button>
+            </form>
+          ) : null}
+          {isInsertDayOpen ? (
+            <form
+              className="compact-form embedded-form"
+              onSubmit={(event) => void handleInsertDayAfter(event)}
+            >
+              <label>
+                <span>{t("tripDetail.insertDayForm.city")}</span>
+                <input
+                  onChange={(event) =>
+                    onInsertDayFormChange(day.id, { city: event.target.value })
+                  }
+                  required
+                  type="text"
+                  value={insertDayForm.city}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.insertDayForm.summary")}</span>
+                <input
+                  onChange={(event) =>
+                    onInsertDayFormChange(day.id, {
+                      summary: event.target.value
+                    })
+                  }
+                  type="text"
+                  value={insertDayForm.summary}
+                />
+              </label>
+              <button className="secondary-action" type="submit">
+                {t("tripDetail.insertDayForm.submit")}
+              </button>
+            </form>
+          ) : null}
         </>
       ) : null}
     </article>

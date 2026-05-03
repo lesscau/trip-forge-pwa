@@ -1,14 +1,15 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "./Button";
+import { IconButton } from "./IconButton";
 
 type CopyButtonProps = {
   text?: string;
   children: ReactNode;
+  icon?: "copy" | "mapPin" | "text" | "ticket";
 };
 
-export function CopyButton({ children, text }: CopyButtonProps) {
+export function CopyButton({ children, icon = "copy", text }: CopyButtonProps) {
   const { t } = useTranslation();
   const [status, setStatus] = useState<"copied" | "error">();
   const value = text?.trim();
@@ -28,14 +29,13 @@ export function CopyButton({ children, text }: CopyButtonProps) {
 
   return (
     <span className="copy-action">
-      <Button
-        aria-label={typeof children === "string" ? children : undefined}
+      <IconButton
         disabled={!value}
+        icon={icon}
+        label={typeof children === "string" ? children : t("copy.copy")}
         onClick={() => void handleCopy()}
         type="button"
-      >
-        {children}
-      </Button>
+      />
       {status ? (
         <span className={status === "copied" ? "copy-status" : "copy-error"}>
           {t(status === "copied" ? "copy.copied" : "copy.error")}

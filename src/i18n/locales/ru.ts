@@ -91,6 +91,7 @@ export const ru = {
     confirmDeleteDocument: "Удалить документ?",
     confirmDeleteChecklistItem: "Удалить пункт чеклиста?",
     collapseDay: "Свернуть",
+    expandDay: "Развернуть",
     collapseAllDays: "Свернуть все",
     expandAllDays: "Развернуть все",
     confirmationCode: "Код подтверждения",
@@ -229,6 +230,7 @@ export const ru = {
     confirmImport: "Импортировать как новую поездку"
   },
   copy: {
+    copy: "Копировать",
     copied: "Скопировано",
     error: "Не удалось скопировать"
   },

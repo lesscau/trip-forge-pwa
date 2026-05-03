@@ -140,8 +140,40 @@ button {
 
 .button-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.75rem;
+  justify-content: flex-end;
+  overflow-x: auto;
+}
+
+.icon-button-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.45rem;
+  justify-content: flex-end;
+  overflow-x: auto;
+}
+
+.section-actions,
+.day-card-footer-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.disclosure-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.disclosure-button span:last-child {
+  color: #0f766e;
+  font-weight: 900;
 }
 
 .primary-action,
@@ -152,6 +184,10 @@ button {
   border-radius: 0.7rem;
   padding: 0.75rem 1rem;
   font-weight: 750;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .primary-action {
@@ -164,6 +200,18 @@ button {
   border-color: #c7d8d2;
   background: #ffffff;
   color: #172026;
+}
+
+.primary-action:not(:disabled):hover {
+  border-color: #0d5f58;
+  background: #0d5f58;
+}
+
+.secondary-action:not(:disabled):hover,
+.settings-list button:not(:disabled):hover {
+  border-color: #0f766e;
+  background: #eefaf7;
+  color: #0d5f58;
 }
 
 .status-panel,
@@ -280,6 +328,10 @@ button {
   gap: 0.75rem;
 }
 
+.section-title-row h2 {
+  min-width: 0;
+}
+
 .form-panel label,
 .compact-form label {
   display: grid;
@@ -357,8 +409,10 @@ button {
 
 .place-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.45rem;
+  justify-content: flex-end;
+  overflow-x: auto;
 }
 
 .field,
@@ -393,6 +447,11 @@ button {
 
 .map-panel > .muted-text {
   padding: 1rem;
+}
+
+.compact-form > .primary-action,
+.compact-form > .secondary-action {
+  justify-self: end;
 }
 
 .leaflet-map-container {
@@ -431,6 +490,58 @@ button {
   cursor: not-allowed;
 }
 
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.icon-button-secondary {
+  border-color: #c7d8d2;
+  background: #ffffff;
+  color: #172026;
+}
+
+.icon-button-secondary:not(:disabled):hover {
+  border-color: #0f766e;
+  background: #eefaf7;
+  color: #0d5f58;
+}
+
+.icon-button-danger {
+  border-color: #f0b8b8;
+  background: #fff7f7;
+  color: #9f1d1d;
+}
+
+.icon-button-danger:not(:disabled):hover {
+  border-color: #dc2626;
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+.icon-button:disabled {
+  background: #eef4f2;
+  color: #8aa09a;
+  cursor: not-allowed;
+}
+
+.icon-button-svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
 .danger-action {
   justify-self: start;
   min-height: 3rem;
@@ -442,6 +553,16 @@ button {
   font: inherit;
   font-weight: 750;
   padding: 0.45rem 0.75rem;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.danger-action:not(:disabled):hover {
+  border-color: #dc2626;
+  background: #fee2e2;
+  color: #7f1d1d;
 }
 
 .form-grid {
@@ -484,11 +605,22 @@ button {
   gap: 0.75rem;
 }
 
+.focus-card > .icon-button,
+.focus-card > .icon-button-row,
+.day-place-card > .icon-button,
+.day-place-card > .icon-button-row,
+.timeline-list article > .icon-button,
+.timeline-list article > .icon-button-row,
+.timeline-list article > .day-card-footer-actions {
+  justify-self: end;
+}
+
 .day-heading-copy,
 .day-heading-actions {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-wrap: nowrap;
 }
 
 .day-heading-copy {
@@ -519,7 +651,7 @@ button {
 
 .reorder-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.4rem;
   justify-content: flex-end;
 }
@@ -602,11 +734,21 @@ button {
   cursor: pointer;
   font-weight: 750;
   padding: 0.65rem 0.9rem;
+  transition:
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .language-option-active {
   border-color: #0f766e;
   background: #d9f4ed;
+  color: #0d5f58;
+}
+
+.language-option:not(:disabled):hover {
+  border-color: #0f766e;
+  background: #eefaf7;
   color: #0d5f58;
 }
 
@@ -664,11 +806,18 @@ button {
   cursor: pointer;
   font-weight: 750;
   padding: 0.75rem 1rem;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .storage-action:disabled {
   background: #93aaa4;
   cursor: not-allowed;
+}
+
+.storage-action:not(:disabled):hover {
+  background: #0d5f58;
 }
 
 .status-message {
@@ -761,6 +910,16 @@ button {
   .item-heading-row {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .section-actions,
+  .day-heading-actions,
+  .day-card-footer-actions,
+  .button-row,
+  .icon-button-row,
+  .place-actions {
+    align-self: flex-end;
+    max-width: 100%;
   }
 
   .place-card-heading {

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import type { Place } from "../../db/database";
 import { buildAmapSearchUrl } from "../../maps/amapLinks";
 import { CopyButton } from "../../shared/CopyButton";
+import { IconLink } from "../../shared/IconButton";
 
 type PlaceActionsProps = {
   place: Place;
@@ -13,20 +14,19 @@ export function PlaceActions({ place }: PlaceActionsProps) {
 
   return (
     <div className="place-actions">
-      <CopyButton text={place.nameZh}>
+      <CopyButton icon="text" text={place.nameZh}>
         {t("placeActions.copyChineseName")}
       </CopyButton>
-      <CopyButton text={place.addressZh}>
+      <CopyButton icon="mapPin" text={place.addressZh}>
         {t("placeActions.copyChineseAddress")}
       </CopyButton>
-      <a
-        className="secondary-action"
+      <IconLink
         href={buildAmapSearchUrl(place)}
+        icon="external"
+        label={t("placeActions.openInAmap")}
         rel="noreferrer"
         target="_blank"
-      >
-        {t("placeActions.openInAmap")}
-      </a>
+      />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { ChecklistItem } from "../../db/database";
+import { IconButton } from "../../shared/IconButton";
 import type { ChecklistFormValues } from "./types";
 
 type ChecklistSectionProps = {
@@ -76,13 +77,13 @@ export function ChecklistSection({
                       type="checkbox"
                     />
                     <span>{item.title}</span>
-                    <button
-                      className="danger-action"
+                    <IconButton
+                      icon="trash"
+                      label={t("common.delete")}
                       onClick={() => void onDeleteChecklistItem(item.id)}
                       type="button"
-                    >
-                      {t("common.delete")}
-                    </button>
+                      variant="danger"
+                    />
                   </label>
                 ))}
               </div>

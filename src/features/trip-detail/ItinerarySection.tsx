@@ -1,4 +1,5 @@
 import type { FormEvent } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { Place } from "../../db/database";
@@ -83,6 +84,7 @@ export function ItinerarySection({
   onToggleDayCollapsed
 }: ItinerarySectionProps) {
   const { t } = useTranslation();
+  const [isAddDayOpen, setIsAddDayOpen] = useState(false);
   const allDaysCollapsed =
     daysWithPlaces.length > 0 &&
     daysWithPlaces.every(({ day }) => collapsedDayIds[day.id]);
@@ -96,55 +98,79 @@ export function ItinerarySection({
     onCollapseDays(daysWithPlaces.map(({ day }) => day.id));
   };
 
+  const handleAddDay = async (event: FormEvent<HTMLFormElement>) => {
+    await onAddDay(event);
+  };
+
   return (
     <section className="data-section">
       <div className="section-title-row">
         <h2>{t("tripDetail.sections.itinerary")}</h2>
-        {daysWithPlaces.length > 0 ? (
+        <div className="section-actions">
           <button
-            className="secondary-action"
-            onClick={toggleAllDaysCollapsed}
+            aria-expanded={isAddDayOpen}
+            className="secondary-action disclosure-button"
+            onClick={() => setIsAddDayOpen((value) => !value)}
             type="button"
           >
-            {allDaysCollapsed
-              ? t("tripDetail.expandAllDays")
-              : t("tripDetail.collapseAllDays")}
+            <span>{t("tripDetail.dayForm.submit")}</span>
+            <span aria-hidden="true">{isAddDayOpen ? "^" : "v"}</span>
           </button>
-        ) : null}
+          {daysWithPlaces.length > 0 ? (
+            <button
+              className="secondary-action"
+              onClick={toggleAllDaysCollapsed}
+              type="button"
+            >
+              {allDaysCollapsed
+                ? t("tripDetail.expandAllDays")
+                : t("tripDetail.collapseAllDays")}
+            </button>
+          ) : null}
+        </div>
       </div>
-      <form className="compact-form" onSubmit={(event) => void onAddDay(event)}>
-        <label>
-          <span>{t("tripDetail.dayForm.date")}</span>
-          <input
-            onChange={(event) => onDayFormChange({ date: event.target.value })}
-            required
-            type="date"
-            value={dayForm.date}
-          />
-        </label>
-        <label>
-          <span>{t("tripDetail.dayForm.city")}</span>
-          <input
-            onChange={(event) => onDayFormChange({ city: event.target.value })}
-            required
-            type="text"
-            value={dayForm.city}
-          />
-        </label>
-        <label>
-          <span>{t("tripDetail.dayForm.summary")}</span>
-          <input
-            onChange={(event) =>
-              onDayFormChange({ summary: event.target.value })
-            }
-            type="text"
-            value={dayForm.summary}
-          />
-        </label>
-        <button className="secondary-action" type="submit">
-          {t("tripDetail.dayForm.submit")}
-        </button>
-      </form>
+      {isAddDayOpen ? (
+        <form
+          className="compact-form"
+          onSubmit={(event) => void handleAddDay(event)}
+        >
+          <label>
+            <span>{t("tripDetail.dayForm.date")}</span>
+            <input
+              onChange={(event) =>
+                onDayFormChange({ date: event.target.value })
+              }
+              required
+              type="date"
+              value={dayForm.date}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.dayForm.city")}</span>
+            <input
+              onChange={(event) =>
+                onDayFormChange({ city: event.target.value })
+              }
+              required
+              type="text"
+              value={dayForm.city}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.dayForm.summary")}</span>
+            <input
+              onChange={(event) =>
+                onDayFormChange({ summary: event.target.value })
+              }
+              type="text"
+              value={dayForm.summary}
+            />
+          </label>
+          <button className="secondary-action" type="submit">
+            {t("tripDetail.dayForm.submit")}
+          </button>
+        </form>
+      ) : null}
       {dayFormError ? <p className="status-message">{dayFormError}</p> : null}
       {daysWithPlaces.length === 0 ? (
         <p className="muted-text">{t("tripDetail.emptyDays")}</p>

@@ -6,6 +6,7 @@ import {
   getExpenseTotalsByCategory,
   getExpenseTotalsByCurrency
 } from "./expenseTotals";
+import { IconButton } from "../../shared/IconButton";
 import type { ExpenseFormValues } from "./types";
 
 type ExpensesSectionProps = {
@@ -163,21 +164,20 @@ export function ExpensesSection({
                         {t("tripDetail.expenseForm.paidBy")}: {expense.paidBy}
                       </p>
                     ) : null}
-                    <div className="button-row">
-                      <button
-                        className="secondary-action"
+                    <div className="icon-button-row">
+                      <IconButton
+                        icon="edit"
+                        label={t("common.edit")}
                         onClick={() => onStartEditingExpense(expense)}
                         type="button"
-                      >
-                        {t("common.edit")}
-                      </button>
-                      <button
-                        className="danger-action"
+                      />
+                      <IconButton
+                        icon="trash"
+                        label={t("common.delete")}
                         onClick={() => void onDeleteExpense(expense.id)}
                         type="button"
-                      >
-                        {t("common.delete")}
-                      </button>
+                        variant="danger"
+                      />
                     </div>
                   </>
                 )}

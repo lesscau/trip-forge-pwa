@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Booking, BookingType } from "../../db/database";
 import { CopyButton } from "../../shared/CopyButton";
+import { IconButton } from "../../shared/IconButton";
 import type { BookingFormValues } from "./types";
 
 const bookingTypes: BookingType[] = [
@@ -185,28 +186,27 @@ export function BookingsSection({
                   {booking.addressZh ? <p>{booking.addressZh}</p> : null}
                   {booking.notes ? <p>{booking.notes}</p> : null}
                   <div className="place-actions">
-                    <CopyButton text={booking.confirmationCode}>
+                    <CopyButton icon="ticket" text={booking.confirmationCode}>
                       {t("tripDetail.bookingActions.copyConfirmationCode")}
                     </CopyButton>
-                    <CopyButton text={booking.addressZh}>
+                    <CopyButton icon="mapPin" text={booking.addressZh}>
                       {t("tripDetail.bookingActions.copyChineseAddress")}
                     </CopyButton>
                   </div>
-                  <div className="button-row">
-                    <button
-                      className="secondary-action"
+                  <div className="icon-button-row">
+                    <IconButton
+                      icon="edit"
+                      label={t("common.edit")}
                       onClick={() => onStartEditingBooking(booking)}
                       type="button"
-                    >
-                      {t("common.edit")}
-                    </button>
-                    <button
-                      className="danger-action"
+                    />
+                    <IconButton
+                      icon="trash"
+                      label={t("common.delete")}
                       onClick={() => void onDeleteBooking(booking.id)}
                       type="button"
-                    >
-                      {t("common.delete")}
-                    </button>
+                      variant="danger"
+                    />
                   </div>
                 </>
               )}

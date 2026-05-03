@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { TravelDocument, TravelDocumentType } from "../../db/database";
+import { IconButton } from "../../shared/IconButton";
 import type { DocumentFormValues } from "./types";
 
 const documentTypes: TravelDocumentType[] = [
@@ -89,13 +90,13 @@ export function DocumentsSection({
               <span>{t(`travelDocumentTypes.${document.type}`)}</span>
               <strong>{document.title}</strong>
               {document.notes ? <p>{document.notes}</p> : null}
-              <button
-                className="danger-action"
+              <IconButton
+                icon="trash"
+                label={t("common.delete")}
                 onClick={() => void onDeleteDocument(document.id)}
                 type="button"
-              >
-                {t("common.delete")}
-              </button>
+                variant="danger"
+              />
             </article>
           ))}
         </div>
