@@ -51,6 +51,8 @@ export type Place = {
   addressZh?: string;
   lat?: number;
   lng?: number;
+  amapPlaceId?: string;
+  amapUrl?: string;
   notes?: string;
   orderIndex: number;
 };

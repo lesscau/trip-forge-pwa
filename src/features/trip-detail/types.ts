@@ -22,10 +22,15 @@ export type InsertDayFormValues = Omit<DayFormValues, "date">;
 
 export type PlaceFormValues = {
   name: string;
+  city: string;
   category: PlaceCategory;
   nameZh: string;
   address: string;
   addressZh: string;
+  lat: string;
+  lng: string;
+  amapPlaceId: string;
+  amapUrl: string;
   notes: string;
 };
 
@@ -90,10 +95,15 @@ export const EMPTY_INSERT_DAY_FORM: InsertDayFormValues = {
 
 export const EMPTY_PLACE_FORM: PlaceFormValues = {
   name: "",
+  city: "",
   category: "other",
   nameZh: "",
   address: "",
   addressZh: "",
+  lat: "",
+  lng: "",
+  amapPlaceId: "",
+  amapUrl: "",
   notes: ""
 };
 

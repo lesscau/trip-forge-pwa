@@ -449,6 +449,10 @@ button {
   padding: 1rem;
 }
 
+.form-field-wide {
+  grid-column: 1 / -1;
+}
+
 .compact-form > .primary-action,
 .compact-form > .secondary-action {
   justify-self: end;

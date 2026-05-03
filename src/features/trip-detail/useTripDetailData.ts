@@ -356,10 +356,15 @@ export function useTripDetailData(tripId?: string) {
       tripId: data.trip.id,
       dayId,
       name,
+      city: placeForm.city.trim() || undefined,
       category: normalizePlaceCategory(placeForm.category),
       nameZh: placeForm.nameZh.trim() || undefined,
       address: placeForm.address.trim() || undefined,
       addressZh: placeForm.addressZh.trim() || undefined,
+      lat: parseOptionalCoordinate(placeForm.lat),
+      lng: parseOptionalCoordinate(placeForm.lng),
+      amapPlaceId: placeForm.amapPlaceId.trim() || undefined,
+      amapUrl: placeForm.amapUrl.trim() || undefined,
       notes: placeForm.notes.trim() || undefined,
       orderIndex: getNextOrderIndex(data.places)
     });
@@ -391,10 +396,15 @@ export function useTripDetailData(tripId?: string) {
       ...current,
       [place.id]: {
         name: place.name,
+        city: place.city ?? "",
         category: place.category ?? "other",
         nameZh: place.nameZh ?? "",
         address: place.address ?? "",
         addressZh: place.addressZh ?? "",
+        lat: place.lat?.toString() ?? "",
+        lng: place.lng?.toString() ?? "",
+        amapPlaceId: place.amapPlaceId ?? "",
+        amapUrl: place.amapUrl ?? "",
         notes: place.notes ?? ""
       }
     }));
@@ -426,10 +436,15 @@ export function useTripDetailData(tripId?: string) {
 
     const placeForm = editPlaceForms[place.id] ?? {
       name: place.name,
+      city: place.city ?? "",
       category: place.category ?? "other",
       nameZh: place.nameZh ?? "",
       address: place.address ?? "",
       addressZh: place.addressZh ?? "",
+      lat: place.lat?.toString() ?? "",
+      lng: place.lng?.toString() ?? "",
+      amapPlaceId: place.amapPlaceId ?? "",
+      amapUrl: place.amapUrl ?? "",
       notes: place.notes ?? ""
     };
     const name = placeForm.name.trim();
@@ -441,10 +456,15 @@ export function useTripDetailData(tripId?: string) {
     await upsertPlace({
       ...place,
       name,
+      city: placeForm.city.trim() || undefined,
       category: normalizePlaceCategory(placeForm.category),
       nameZh: placeForm.nameZh.trim() || undefined,
       address: placeForm.address.trim() || undefined,
       addressZh: placeForm.addressZh.trim() || undefined,
+      lat: parseOptionalCoordinate(placeForm.lat),
+      lng: parseOptionalCoordinate(placeForm.lng),
+      amapPlaceId: placeForm.amapPlaceId.trim() || undefined,
+      amapUrl: placeForm.amapUrl.trim() || undefined,
       notes: placeForm.notes.trim() || undefined
     });
     setEditingPlaceId(undefined);
@@ -801,4 +821,15 @@ function createBookingForm(booking: Booking): BookingFormValues {
     addressZh: booking.addressZh ?? "",
     notes: booking.notes ?? ""
   };
+}
+
+function parseOptionalCoordinate(value: string): number | undefined {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return undefined;
+  }
+
+  const coordinate = Number(trimmedValue);
+  return Number.isFinite(coordinate) ? coordinate : undefined;
 }

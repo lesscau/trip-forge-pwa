@@ -127,6 +127,8 @@ export const en = {
       addressZh: "Chinese address",
       lat: "Latitude",
       lng: "Longitude",
+      amapUrl: "Amap link",
+      amapUrlPlaceholder: "https://ditu.amap.com/place/B000A9PIRT",
       notes: "Notes",
       submit: "Add place"
     },

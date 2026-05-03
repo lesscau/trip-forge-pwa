@@ -127,6 +127,8 @@ export const ru = {
       addressZh: "Адрес на китайском",
       lat: "Широта",
       lng: "Долгота",
+      amapUrl: "Ссылка Amap",
+      amapUrlPlaceholder: "https://ditu.amap.com/place/B000A9PIRT",
       notes: "Заметки",
       submit: "Добавить место"
     },

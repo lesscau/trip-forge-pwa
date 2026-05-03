@@ -184,6 +184,17 @@ export function DayCard({
               className="compact-form day-place-form"
               onSubmit={(event) => void handleAddPlace(event)}
             >
+              <label className="form-field-wide">
+                <span>{t("tripDetail.placeForm.amapUrl")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { amapUrl: event.target.value })
+                  }
+                  placeholder={t("tripDetail.placeForm.amapUrlPlaceholder")}
+                  type="url"
+                  value={placeForm.amapUrl}
+                />
+              </label>
               <label>
                 <span>{t("tripDetail.placeForm.name")}</span>
                 <input
@@ -193,6 +204,16 @@ export function DayCard({
                   required
                   type="text"
                   value={placeForm.name}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.dayForm.city")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { city: event.target.value })
+                  }
+                  type="text"
+                  value={placeForm.city}
                 />
               </label>
               <label>
@@ -243,6 +264,28 @@ export function DayCard({
                   }
                   type="text"
                   value={placeForm.addressZh}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.lat")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { lat: event.target.value })
+                  }
+                  step="any"
+                  type="number"
+                  value={placeForm.lat}
+                />
+              </label>
+              <label>
+                <span>{t("tripDetail.placeForm.lng")}</span>
+                <input
+                  onChange={(event) =>
+                    onPlaceFormChange(day.id, { lng: event.target.value })
+                  }
+                  step="any"
+                  type="number"
+                  value={placeForm.lng}
                 />
               </label>
               <label>

@@ -40,10 +40,15 @@ export function PlaceCard({
   const { t } = useTranslation();
   const formValues = editPlaceForm ?? {
     name: place.name,
+    city: place.city ?? "",
     category: place.category ?? "other",
     nameZh: place.nameZh ?? "",
     address: place.address ?? "",
     addressZh: place.addressZh ?? "",
+    lat: place.lat?.toString() ?? "",
+    lng: place.lng?.toString() ?? "",
+    amapPlaceId: place.amapPlaceId ?? "",
+    amapUrl: place.amapUrl ?? "",
     notes: place.notes ?? ""
   };
 
@@ -63,6 +68,16 @@ export function PlaceCard({
               required
               type="text"
               value={formValues.name}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.dayForm.city")}</span>
+            <input
+              onChange={(event) =>
+                onEditFormChange(place.id, { city: event.target.value })
+              }
+              type="text"
+              value={formValues.city}
             />
           </label>
           <label>
@@ -110,6 +125,38 @@ export function PlaceCard({
               }
               type="text"
               value={formValues.addressZh}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.placeForm.lat")}</span>
+            <input
+              onChange={(event) =>
+                onEditFormChange(place.id, { lat: event.target.value })
+              }
+              step="any"
+              type="number"
+              value={formValues.lat}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.placeForm.lng")}</span>
+            <input
+              onChange={(event) =>
+                onEditFormChange(place.id, { lng: event.target.value })
+              }
+              step="any"
+              type="number"
+              value={formValues.lng}
+            />
+          </label>
+          <label>
+            <span>{t("tripDetail.placeForm.amapUrl")}</span>
+            <input
+              onChange={(event) =>
+                onEditFormChange(place.id, { amapUrl: event.target.value })
+              }
+              type="url"
+              value={formValues.amapUrl}
             />
           </label>
           <label>

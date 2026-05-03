@@ -61,6 +61,8 @@ export const placeSchema = z.object({
   addressZh: z.string().optional(),
   lat: z.number().optional(),
   lng: z.number().optional(),
+  amapPlaceId: z.string().optional(),
+  amapUrl: z.string().optional(),
   notes: z.string().optional(),
   orderIndex: z.number().int()
 });
