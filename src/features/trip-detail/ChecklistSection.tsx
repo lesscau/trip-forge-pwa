@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import type { ChecklistItem } from "../../db/database";
 import { IconButton } from "../../shared/IconButton";
+import { SectionHeader } from "../../shared/SectionHeader";
 import type { ChecklistFormValues } from "./types";
 
 type ChecklistSectionProps = {
@@ -27,7 +28,7 @@ export function ChecklistSection({
 
   return (
     <section className="data-section">
-      <h2>{t("tripDetail.sections.checklist")}</h2>
+      <SectionHeader icon="checklist" title={t("tripDetail.sections.checklist")} />
       <form
         className="compact-form"
         onSubmit={(event) => void onAddChecklistItem(event)}

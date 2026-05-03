@@ -7,6 +7,7 @@ import {
   getExpenseTotalsByCurrency
 } from "./expenseTotals";
 import { IconButton } from "../../shared/IconButton";
+import { SectionHeader } from "../../shared/SectionHeader";
 import type { ExpenseFormValues } from "./types";
 
 type ExpensesSectionProps = {
@@ -50,7 +51,7 @@ export function ExpensesSection({
 
   return (
     <section className="data-section">
-      <h2>{t("tripDetail.sections.expenses")}</h2>
+      <SectionHeader icon="expenses" title={t("tripDetail.sections.expenses")} />
       <form
         className="compact-form"
         onSubmit={(event) => void onAddExpense(event)}

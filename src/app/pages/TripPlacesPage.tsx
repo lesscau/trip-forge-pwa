@@ -16,6 +16,7 @@ import {
   placeCategories
 } from "../../features/places/placeCategories";
 import { PlaceActions } from "../../features/places/PlaceActions";
+import { PlaceCategoryChip } from "../../features/places/PlaceCategoryChip";
 import { TripPlacesMap } from "../../features/places/TripPlacesMap";
 import {
   filterPlaces,
@@ -27,6 +28,7 @@ import {
 } from "../../features/places/tripPlaces";
 import { TripHeader } from "../../features/trip-detail/TripHeader";
 import { IconButton } from "../../shared/IconButton";
+import { SectionHeader } from "../../shared/SectionHeader";
 
 type TripPlacesState = {
   trip?: Trip;
@@ -249,12 +251,15 @@ export function TripPlacesPage() {
       </div>
 
       <section className="data-section" aria-labelledby="trip-places-title">
-        <div className="section-title-row">
-          <h2 id="trip-places-title">{t("tripPlaces.title")}</h2>
-          <span className="muted-text">
+        <SectionHeader
+          icon="places"
+          title={<span id="trip-places-title">{t("tripPlaces.title")}</span>}
+          actions={
+            <span className="muted-text">
             {t("tripPlaces.count", { count: filteredPlaces.length })}
           </span>
-        </div>
+          }
+        />
         {saveError ? <p className="status-message">{saveError}</p> : null}
 
         <div className="places-filter-panel">
@@ -594,7 +599,7 @@ function PlaceListCard({
         <>
           <div className="place-card-heading">
             <strong>{place.name}</strong>
-            <span>{t(getPlaceCategoryLabelKey(place.category ?? "other"))}</span>
+            <PlaceCategoryChip category={place.category} />
           </div>
           {place.nameZh ? <span>{place.nameZh}</span> : null}
           {place.city ? <p>{place.city}</p> : null}

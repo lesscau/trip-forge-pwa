@@ -8,6 +8,7 @@ import {
 } from "../places/placeCategories";
 import { IconButton } from "../../shared/IconButton";
 import { PlaceActions } from "../places/PlaceActions";
+import { PlaceCategoryChip } from "../places/PlaceCategoryChip";
 import type { PlaceFormValues } from "./types";
 
 type PlaceCardProps = {
@@ -203,7 +204,7 @@ export function PlaceCard({
               />
             </div>
           </div>
-          <span>{t(getPlaceCategoryLabelKey(place.category ?? "other"))}</span>
+          <PlaceCategoryChip category={place.category} />
           {place.nameZh ? <span>{place.nameZh}</span> : null}
           {place.addressZh ? <p>{place.addressZh}</p> : null}
           {place.address ? <p>{place.address}</p> : null}

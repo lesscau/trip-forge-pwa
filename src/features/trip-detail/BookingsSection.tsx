@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import type { Booking, BookingType } from "../../db/database";
 import { CopyButton } from "../../shared/CopyButton";
 import { IconButton } from "../../shared/IconButton";
+import { SectionHeader } from "../../shared/SectionHeader";
+import { BookingTypeChip } from "./TypeChip";
 import type { BookingFormValues } from "./types";
 
 const bookingTypes: BookingType[] = [
@@ -51,7 +53,7 @@ export function BookingsSection({
 
   return (
     <section className="data-section">
-      <h2>{t("tripDetail.sections.bookings")}</h2>
+      <SectionHeader icon="bookings" title={t("tripDetail.sections.bookings")} />
       <form
         className="compact-form"
         onSubmit={(event) => void onAddBooking(event)}
@@ -164,7 +166,7 @@ export function BookingsSection({
                 />
               ) : (
                 <>
-                  <span>{t(`bookingTypes.${booking.type}`)}</span>
+                  <BookingTypeChip type={booking.type} />
                   <strong>{booking.title}</strong>
                   {booking.confirmationCode ? (
                     <p>

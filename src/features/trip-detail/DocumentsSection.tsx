@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import type { TravelDocument, TravelDocumentType } from "../../db/database";
 import { IconButton } from "../../shared/IconButton";
+import { SectionHeader } from "../../shared/SectionHeader";
+import { TravelDocumentTypeChip } from "./TypeChip";
 import type { DocumentFormValues } from "./types";
 
 const documentTypes: TravelDocumentType[] = [
@@ -33,7 +35,7 @@ export function DocumentsSection({
 
   return (
     <section className="data-section">
-      <h2>{t("tripDetail.sections.documents")}</h2>
+      <SectionHeader icon="documents" title={t("tripDetail.sections.documents")} />
       <form
         className="compact-form"
         onSubmit={(event) => void onAddDocument(event)}
@@ -87,7 +89,7 @@ export function DocumentsSection({
         <div className="card-grid">
           {documents.map((document) => (
             <article className="focus-card" key={document.id}>
-              <span>{t(`travelDocumentTypes.${document.type}`)}</span>
+              <TravelDocumentTypeChip type={document.type} />
               <strong>{document.title}</strong>
               {document.notes ? <p>{document.notes}</p> : null}
               <IconButton

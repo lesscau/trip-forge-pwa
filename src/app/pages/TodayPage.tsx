@@ -19,12 +19,15 @@ import {
 import { formatDate } from "../../shared/format";
 import { CopyButton } from "../../shared/CopyButton";
 import { EmptyState } from "../../shared/EmptyState";
+import { SectionHeader } from "../../shared/SectionHeader";
 import {
   selectTodayTrip,
   toLocalDateKey,
   type TodaySelection
 } from "../todaySelection";
 import { PlaceActions } from "../../features/places/PlaceActions";
+import { PlaceCategoryChip } from "../../features/places/PlaceCategoryChip";
+import { BookingTypeChip } from "../../features/trip-detail/TypeChip";
 
 export function TodayPage() {
   const { i18n, t } = useTranslation();
@@ -104,7 +107,8 @@ export function TodayPage() {
         </EmptyState>
       ) : (
         <>
-          <article className="focus-card">
+          <article className="today-travel-card">
+            <div className="today-travel-card-copy">
             <span>
               {t(`today.selectedDayKinds.${selection.selectedDayKind}`)}
             </span>
@@ -114,16 +118,37 @@ export function TodayPage() {
               {selection.day.city}
             </p>
             {selection.day.summary ? <p>{selection.day.summary}</p> : null}
+            </div>
+            <dl className="today-travel-stats">
+              <div>
+                <dt>{t("tripDetail.sections.places")}</dt>
+                <dd>{selection.places.length}</dd>
+              </div>
+              <div>
+                <dt>{t("tripDetail.sections.bookings")}</dt>
+                <dd>{selection.bookings.length}</dd>
+              </div>
+              <div>
+                <dt>{t("tripDetail.sections.checklist")}</dt>
+                <dd>{selection.checklistItems.length}</dd>
+              </div>
+            </dl>
+            <div className="today-route-strip" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
           </article>
 
           <section className="data-section">
-            <h2>{t("tripDetail.sections.places")}</h2>
+            <SectionHeader icon="places" title={t("tripDetail.sections.places")} />
             {selection.places.length === 0 ? (
               <EmptyState>{t("today.emptyPlaces")}</EmptyState>
             ) : (
               <div className="card-grid">
                 {selection.places.map((place) => (
                   <article className="focus-card" key={place.id}>
+                    <PlaceCategoryChip category={place.category} />
                     <span>{place.nameZh ?? t("tripDetail.place")}</span>
                     <strong>{place.name}</strong>
                     {place.addressZh ? <p>{place.addressZh}</p> : null}
@@ -135,14 +160,14 @@ export function TodayPage() {
           </section>
 
           <section className="data-section">
-            <h2>{t("tripDetail.sections.bookings")}</h2>
+            <SectionHeader icon="bookings" title={t("tripDetail.sections.bookings")} />
             {selection.bookings.length === 0 ? (
               <EmptyState>{t("today.emptyBookings")}</EmptyState>
             ) : (
               <div className="card-grid">
                 {selection.bookings.map((booking) => (
                   <article className="focus-card" key={booking.id}>
-                    <span>{t(`bookingTypes.${booking.type}`)}</span>
+                    <BookingTypeChip type={booking.type} />
                     <strong>{booking.title}</strong>
                     {booking.confirmationCode ? (
                       <p>
@@ -160,7 +185,7 @@ export function TodayPage() {
           </section>
 
           <section className="data-section">
-            <h2>{t("tripDetail.sections.checklist")}</h2>
+            <SectionHeader icon="checklist" title={t("tripDetail.sections.checklist")} />
             {selection.checklistItems.length === 0 ? (
               <EmptyState>{t("today.emptyChecklist")}</EmptyState>
             ) : (

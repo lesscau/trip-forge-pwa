@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { Place } from "../../db/database";
 import type { DayWithPlaces } from "../../app/tripDetailData";
+import { SectionHeader } from "../../shared/SectionHeader";
 import { DayCard } from "./DayCard";
 import {
   EMPTY_INSERT_DAY_FORM,
@@ -104,9 +105,11 @@ export function ItinerarySection({
 
   return (
     <section className="data-section">
-      <div className="section-title-row">
-        <h2>{t("tripDetail.sections.itinerary")}</h2>
-        <div className="section-actions">
+      <SectionHeader
+        icon="itinerary"
+        title={t("tripDetail.sections.itinerary")}
+        actions={
+          <div className="section-actions">
           <button
             aria-expanded={isAddDayOpen}
             className="secondary-action disclosure-button"
@@ -127,8 +130,9 @@ export function ItinerarySection({
                 : t("tripDetail.collapseAllDays")}
             </button>
           ) : null}
-        </div>
-      </div>
+          </div>
+        }
+      />
       {isAddDayOpen ? (
         <form
           className="compact-form"
